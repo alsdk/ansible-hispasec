@@ -1,0 +1,23 @@
+---
+
+  - name: add rabbitmq's repo key
+    become: yes
+    apt_key: 
+      id: 6026DFCA
+      url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+      state: present
+
+  - name: add rabbitmq's repo to sources
+    become: yes
+    apt_repository: 
+      repo: deb http://www.rabbitmq.com/debian/ testing main
+      state: present
+      filename: 'rabbitmq-server'
+      update_cache: yes
+      validate_certs: yes
+
+  - name: install rabbitmq
+    become: yes
+    apt: 
+      name: rabbitmq-server
+      state: latest

@@ -1,0 +1,35 @@
+---
+- hosts: cluster
+  tasks:
+          # create users for us
+          # note user vivek added to sudo group 
+          # on many system you may need to use wheel 
+          # user in sudo or wheel group can sudo
+          - user:
+                  name: vivek
+                  comment: "Vivek Gite"
+                  shell: /bin/bash
+                  groups: sudo
+                  append: yes
+                  generate_ssh_key: yes
+                  ## run command 'mkpasswd --method=sha-512' to create your own encrypted password ##
+                  password: $6$gF1EHgeUSSwDT3$xgw22QBdZfNe3OUjJkwXZOlEsL645TpacwiYwTwlUyah03.Zh1aUTTfh7iC7Uu5WfmHBkv5fxdbJ2OkzMAPkm/
+                  ssh_key_type: ed25519
+          # upload ssh key                
+          - authorized_key:
+                  user: vivek
+                  state: present
+                  manage_dir: yes
+                  key: "{{ lookup('file', '/home/vivek/.ssh/id_ed25519.pub') }}"
+          # configure ssh server
+          - template:
+                  src: ssh-setup.j2
+                  dest: /etc/ssh/sshd_config
+                  owner: root
+                  mode: '0600'
+                  validate: /usr/sbin/sshd -t -f %s
+                  backup: yes
+          # restart sshd
+          - service:
+                  name: sshd
+                  state: restarted

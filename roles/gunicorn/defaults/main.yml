@@ -1,0 +1,20 @@
+---
+
+gunicorn_user: 'gunicorn'
+
+
+gunicorn_cpu_coefficient: 2
+gunicorn_workers: 8
+gunicorn_workers_class: 
+gunicorn_workers_timeout:
+gunicorn_bind: 
+gunicorn_accesslog: 
+gunicorn_errorlog: 
+gunicorn_loglevel: 
+
+
+
+
+gunicorn_app_name:
+gunicorn_app_dir:
+gunicorn_wsgi:

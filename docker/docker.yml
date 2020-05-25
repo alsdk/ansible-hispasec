@@ -1,0 +1,41 @@
+---
+- hosts: 'all'
+  become: true
+  tasks:
+  - name: Instalar paquetes requeridos para Docker e instalación
+    apt:
+      update_cache: true
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - lsb-core
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+        - python-setuptools
+        - python-pip
+        - git
+  - name: Instalar clave Docker
+    apt_key:
+      url: https://download.docker.com/linux/debian/gpg
+  - name: Instalar repositorio Docker
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_lsb.codename }} stable"
+  - name: Actualizar listado de paquetes
+    apt:
+      update_cache: yes
+  - name: Instalar Docker
+    apt:
+      name: docker-ce
+  - name: Instalar Docker-compose
+    pip:
+      name: docker-compose
+  - name: Grupo docker
+    group:
+      name: docker
+      state: present
+  - name: Usuario docker
+    user:
+      name: docker
+      group: docker

@@ -1,0 +1,84 @@
+ALLOWED_HOSTS = ['*.hispasec.com']
+DEBUG = True
+
+ROOT_URLCONF = 'panel.urls'
+SUBDOMAIN_URLCONFS = {
+        None: 'clients.urls',
+        'ecrime.csirt': 'ecrime.urls',
+        'dashboard.csirt': 'clients.urls',
+        'sana.csirt': 'sana.urls',
+        'notifications.csirt': 'notifications.urls',
+        'itw.csirt': 'itw.urls',
+}
+
+RELATIVE_SUBDOMAINS_SERVICE_NAME = {
+    'csirt': 'dashboard.csirt',
+    'ecrime': 'ecrime.csirt',
+    'sana': 'sana.csirt',
+    'notifications': 'notifications.csirt',
+    'itw': 'itw.csirt'
+}
+
+CELERY_ALWAYS_EAGER = True
+#BROKER_URL = 'amqp://guest@localhost//'
+#BROKER_BACKEND='memory'
+CELERY_IMPORTS = ("sana.tasks", )
+
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_BASE_DOMAIN = "hispasec.com"
+DEFAULT_PORT = 443
+
+CORS_ORIGIN_ALLOW_ALL = True
+SESSION_COOKIE_DOMAIN = ".hispasec.com"
+
+# Backend APIs
+ECRIME_API_BASIC_AUTH = ("equipofraude", "9KYNls1tO")
+ECRIME_API_BASE_URL = "https://gta.hispasec.com/api/v2/"
+
+SNDR_API_URL = "http://sndr.pta.hispasec.com:33234/api/"
+SNDR_API_USER = "dvaca"
+SNDR_API_PASS = "dvaca"
+SNDR_ADMIN_MAILS = ("dvaca@hispasec.com",)
+
+SANA_API_BASE_URL = "https://nvdapi.hispasec.com/clients/%(code)s/"
+SANA_API_BASE_ALT_URL = "https://nvdapi.hispasec.com/"
+SANA_API_TOKEN_AUTH = "df0ac816691452c29a68da0f52d5b34e4a26d5b4"
+
+#Email settings
+SERVER_EMAIL = "gta@paperboy.hispasec.com"
+EMAIL_HOST = "paperboy.hispasec.com"
+EMAIL_HOST_USER = "gta@paperboy.hispasec.com"
+EMAIL_HOST_PASSWORD = "A2S^O!DLbZ.b"
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+EMAIL_FROM = "Hispasec Sistemas <antifraude@hispasec.com>"
+DEFAULT_FROM_EMAIL = "Hispasec Sistemas <antifraude@hispasec.com>"
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'panel',
+        'USER': 'panel',
+        'HOST': '37.139.26.61',
+        'PASSWORD': '7DX%wNAxV_Lpz0ufK'
+    }
+}
+
+#For testing purposes
+import sys
+if 'test' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase'
+    }
+
+CUSTOM_DOMAIN_STYLES = {
+    "localhost.com": "css/themes/hispa.css",
+    "localhost2.com": "css/themes/amethyst.min.css",
+}
+
+# BD desarrollo panel.dev.hispasec.com
+# 37.139.26.61 panel.dev.hispasec.com
+# user: panel
+# bd: panel
+# pass: 7DX%wNAxV_Lpz0ufK

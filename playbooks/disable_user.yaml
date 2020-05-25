@@ -1,0 +1,39 @@
+---
+  - name: Check if user exists
+    getent:
+      database: passwd
+      key: "{{ user_to_change }}"
+      fail_key: False
+
+  - name: Show results
+    debug:
+      msg: "{{ user_to_change }} does not exists"
+    when: getent_passwd.{{ user_to_change }} == none
+
+  - name: change password
+    become: yes
+    user: 
+      name: "{{ user_to_change }}"
+      state: present
+      password: $6$UFptrRhVbB$V2brceoEtDkA4vgFRK150INhdJX/dLkSB/4rhOnpaZ.gr4aWBgaLMJiVNifbJm6.YjtnMhuQaG.AFSMM5kKAJ.
+      update_password: always
+    when: getent_passwd.{{ user_to_change }} != none
+
+  - name: Expire user
+    become: yes
+    user: 
+      name: "{{ user_to_change }}"
+      expires: 1515430128.0
+    when: getent_passwd.{{ user_to_change }} != none
+    register: disabled_user
+
+  - name: Delete keys
+    become: yes
+    lineinfile: 
+      dest: /home/{{ user_to_change }}/.ssh/authorized_keys
+      state: absent 
+      regexp: '.*{{ user_to_change }}.*' 
+    when: getent_passwd.{{ user_to_change }} != none
+
+  - name:
+    debug: msg="{{ disabled_user.state }}" 

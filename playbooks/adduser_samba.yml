@@ -1,0 +1,16 @@
+---
+
+  - name: Add user {{ username }} to hispasec group
+    become: yes
+    user: 
+      name: "{{ username }}"
+      groups: hispasec
+      append: yes
+
+  - name: Create {{ username }} backup dir
+    become: yes
+    file: 
+      path: "/home/{{ username }}/backup"
+      state: directory
+      owner: "{{ username }}"
+      group: "{{ username }}"

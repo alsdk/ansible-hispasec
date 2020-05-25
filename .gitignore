@@ -1,0 +1,12 @@
+!/hosts
+!/hosts/*
+hosts/*/sudo_pass
+hosts_vars_dep/
+**vault*
+**ssl*
+revision/*
+*/ssl/*
+**ssh-keys*
+
+master.retry
+/.idea

@@ -1,0 +1,5 @@
+---
+nagios:
+  server: '62.14.231.122'
+  
+is_vm: 'False'

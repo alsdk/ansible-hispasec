@@ -1,0 +1,19 @@
+---
+  - name: install python 2
+    gather_facts: false
+    apt:
+      name: python
+      state: present
+      update_cache: yes
+    tags:
+      - setup_user_env
+
+  - name: install sudo 
+    gather_facts: false
+    apt: 
+      name: sudo
+      state: present
+      update_cache: yes
+    tags:
+      - setup_user_env
+

@@ -1,0 +1,43 @@
+---
+  - name: upload ssh keys
+    become: yes
+    copy: src=~/.ssh/{{ item }} dest=~/.ssh/ owner=root group=root mode=0600
+    with_items:
+      - ansible_deploy
+      - ansible_deploy.pub
+    tags:
+      - git_clone_repo
+
+  - name: clone {{ app_name }} repository
+    become: yes
+    git: 
+      repo: {{ app_repo_url }}
+      version: {{ app_branch }}
+      clone: yes
+      dest: {{ app_working_dir }}
+      accept_hostkey: yes
+      key_file: "~/.ssh/ansible_deploy"
+    tags:
+      - git-clone-repo
+
+  - name: install requirements
+    become: yes
+    pip: 
+      chdir: {{ app_working_dir }}
+      requirements: requirements.txt
+      state: present
+      virtualenv: /home/develop/.virtualenvs/{{ app_name }}
+    tags:
+      - git-clone-repo
+
+  - name: upload local_settings.py
+    become: yes
+    template: 
+      src: local_settings/{{ app_name }}.j2 
+      dest: "{{ app_working_dir }}/{{ app_name }}/local_settings.py"
+      owner: root 
+      group: dev 
+      mode: 0644
+    tags:
+      - upload-local-settings
+

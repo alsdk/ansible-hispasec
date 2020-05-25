@@ -1,0 +1,29 @@
+---
+- hosts: sentry
+  become: true
+  vars:
+    services:
+      - - sentry.service
+    timers:
+  tasks:
+  - name: Copiar servicios
+    copy:
+      src: '{{ item }}'
+      dest: '/etc/systemd/system/{{ item | basename }}'
+    with_fileglob:
+      - "services/*"
+    notify:
+      - Reiniciar servicios
+  - name: Asegurarse de que los servicios copiados son actualizados
+    systemd: daemon_reload=yes
+    notify:
+      - Reiniciar servicio
+  - name: Activar servicios
+    systemd: name={{ item }} enabled=yes
+    with_items: "{{ services }}"
+  handlers:
+    - name: Reiniciar servicios
+      systemd:
+        name: "{{ item }}"
+        state: restarted
+      with_items: "{{ services }}"

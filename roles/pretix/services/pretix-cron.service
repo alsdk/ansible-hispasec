@@ -1,0 +1,9 @@
+[Unit]
+Description=Pretix cron
+
+[Service]
+WorkingDirectory=/home/docker/pretix/
+ExecStart=/usr/bin/docker exec pretix_gunicorn_1 pretix cron
+
+[Install]
+WantedBy=multi-user.target

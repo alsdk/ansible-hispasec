@@ -1,0 +1,22 @@
+---
+  - name: Updating dhcp configuration
+    template:
+      backup: yes
+      src: dhcp/dhcpd.conf.j2
+      dest: "/etc/dhcp/dhcpd.conf"
+      # Check the validate method. Curently it says:
+      # Can't open /home/flopez/.ansible/tmp/ansible-tmp-1519152139.16-273843725904519/source: Permission denied
+      # validate: '/usr/sbin/dhcpd -t -cf %s'
+
+  - name: Restarting dhcp on gateway
+    service: 
+      name: isc-dhcp-server
+      state: restarted
+      enabled: yes
+
+  - name: Restarting bind on gateway
+    #become: yes
+    service:
+      name: bind9
+      state: restarted
+      enabled: yes

@@ -1,0 +1,17 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Instalar libpam-ssh-agent-auth
+    apt:
+      update_cache: true
+      name: 'libpam-ssh-agent-auth'
+  - name: Añadir a sudoers
+    lineinfile:
+      dest: "/etc/sudoers"
+      line: 'Defaults env_keep += "SSH_AUTH_SOCK"'
+  - name: Añadir a PAM sudo pam_ssh_agent_auth.so
+    lineinfile:
+      dest: "/etc/pam.d/sudo"
+      insertafter: '#%PAM-1.0'
+      line: 'auth       sufficient pam_ssh_agent_auth.so file=~/.ssh/authorized_keys'

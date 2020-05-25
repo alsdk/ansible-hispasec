@@ -1,0 +1,8 @@
+---
+  - name: install sudo
+    become: true 
+    apt: 
+      name: sudo 
+      state: present
+    tags:
+      - setup_user_env

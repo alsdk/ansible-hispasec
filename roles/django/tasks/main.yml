@@ -1,0 +1,6 @@
+---
+
+  - include: dependencies.yml
+  - include: python.yml
+  - include: virtualenv.yml
+    when: requires_virtualenv

@@ -1,0 +1,34 @@
+---
+  - name: Unarchive ceph-keys.tar.gz
+    unarchive:
+      src: files/ceph/ceph-keys.tar.gz
+      dest: /home/ceph-user/
+      owner: ceph-user
+      group: ceph-user
+  - name: Copy ceph.conf to /etc/ceph/ceph.conf
+    copy:
+      src: /home/ceph-user/ceph.conf
+      dest: /etc/ceph/ceph.conf
+      remote_src: yes
+  - name: Unmount /data volume
+    mount:
+      path: /data
+      state: unmounted
+  - name: Create and format OSD disk /dev/vg0/data
+    become: yes
+    become_user: ceph-user
+    shell: "cd /home/ceph-user && ceph-deploy osd create --data /dev/vg0/data {{ hostname }}"
+  - name: Create and format the remaining OSD disks
+    become: yes
+    become_user: ceph-user
+    shell: "cd /home/ceph-user && ceph-deploy osd create --data /dev/sd{{ item }} {{ hostname }}"
+    with_items:
+      - b
+      - c
+      - d
+      - e
+      - f
+      - g
+      - h
+      - i
+      - j

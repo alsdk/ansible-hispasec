@@ -1,0 +1,52 @@
+---
+  - name: Copy .zshrc to {{ username }} home dir on remote server
+    copy:
+      src: ~/.zshrc
+      dest: /home/{{ username }}/.zshrc
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    tags: chiringuito
+
+  - name: Copy .oh-my-zsh dir to {{ username }} home dir on remote server
+    synchronize:
+      src: ~/.oh-my-zsh
+      dest: /home/{{ username }}
+      owner: no
+    tags: chiringuito
+
+  - name: Setting permsissions for ~/.oh-my-zsh dir
+    file:
+      dest: /home/{{ username }}/.oh-my-zsh
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      recurse: yes
+    tags: chiringuito
+
+  - name: Copy .vimrc to {{ username }} home dir on remote server
+    copy:
+      src: ~/.vimrc
+      dest: /home/{{ username }}/.vimrc
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    tags: chiringuito
+
+  - name: Copy .tmux.conf to {{ username }} home dir on remote server
+    copy:
+      src: ~/.tmux.conf
+      dest: /home/{{ username }}/.tmux.conf
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    tags: chiringuito
+
+  - name: Copy .tmux directory to {{ username }} home dir on remote server
+    copy:
+      src: ~/.tmux
+      dest: /home/{{ username }}
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0655
+    tags: chiringuito
+

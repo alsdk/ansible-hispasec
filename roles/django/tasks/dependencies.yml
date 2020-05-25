@@ -1,0 +1,26 @@
+---
+   -  name: install django dependencies
+      become: yes
+      package: 
+         name: {{item}} 
+         state: present
+      with_items:
+         - default-libmysqlclient-dev
+         - python-mysqldb
+      when: requires_mysql
+      tags: 
+         - django-dependencies
+
+   -  name: install django dependencies
+      become: yes
+      package: 
+         name: libapache2-mod-wsgi
+         state: present
+      when: requires_apache
+      tags: 
+         - django-dependencies
+
+
+
+
+

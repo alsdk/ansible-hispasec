@@ -1,0 +1,26 @@
+DRIVE1 /dev/sda
+DRIVE2 /dev/sdb
+DRIVE3 /dev/sdc
+DRIVE4 /dev/sdd
+DRIVE5 /dev/sde
+DRIVE6 /dev/sdf
+DRIVE7 /dev/sdg
+DRIVE8 /dev/sdh
+DRIVE9 /dev/sdi
+DRIVE10 /dev/sdj
+
+SWRAID 0
+SWRAIDLEVEL 0
+
+BOOTLOADER grub
+
+HOSTNAME {{ inventory_hostname }}
+
+PART /boot ext3 512M
+PART lvm   vg0  all
+
+LV vg0 swap swap swap   2G
+LV vg0 root /    ext4  250G
+LV vg0 data /data ext4 all
+
+IMAGE /root/images/Debian-95-stretch-64-minimal.tar.gz

@@ -1,0 +1,9 @@
+---
+"nagios":
+  "server-name": "koodous-mon"
+  "server": "144.76.7.117"
+
+"cert":
+  "crt": "koodous.com.crt"
+  "key": "koodous.com.key"
+  "ca" : "gd_bundle-g2-g1.crt"

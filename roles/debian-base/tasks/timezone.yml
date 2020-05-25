@@ -1,0 +1,8 @@
+- name: Set timezone to Europe/Madrid
+  timezone:
+    name: Europe/Madrid
+  tags: timezone-setup
+
+- name: Updating date and time
+  shell: "ntpdate -u pool.ntp.org"
+  tags: timezone-setup

@@ -1,0 +1,197 @@
+# Ansible managed
+
+#
+# Sample configuration file for ISC dhcpd for Debian
+#
+# Attention: If /etc/ltsp/dhcpd.conf exists, that will be used as
+# configuration file instead of this file.
+#
+#
+
+ddns-update-style none;
+
+default-lease-time 600;
+max-lease-time 7200;
+
+# If this DHCP server is the official DHCP server for the local
+# network, the authoritative directive should be uncommented.
+#authoritative;
+
+# Use this to send dhcp log messages to a different log file (you also
+# have to hack syslog.conf to complete the redirection).
+log-facility local7;
+
+# No service will be given on this subnet, but declaring it helps the 
+# DHCP server to understand the network topology.
+
+subnet 192.168.207.0 netmask 255.255.255.0 {
+    range 192.168.207.200 192.168.207.250;
+    option domain-name-servers 192.168.210.1;
+    option routers 192.168.207.1;
+}
+
+subnet 192.168.105.0 netmask 255.255.255.0 {
+    range 192.168.105.100 192.168.105.200;
+    option domain-name-servers 8.8.8.8, 192.168.210.1;
+    option routers 192.168.105.1;
+    filename "pxelinux.0";
+
+option domain-name-servers 8.8.8.8, 192.168.210.1;
+
+# Faltan:
+# framirez
+# dpua
+# mparra
+# mcorado
+# cledesma
+# telefonos
+
+#dgarcia
+    host dgarcia {
+        hardware ethernet 20:c9:d0:2b:f0:d9;
+        fixed-address 192.168.105.8;
+    }
+
+#mmanteca
+    host mmanteca {
+        hardware ethernet 0a:00:27:00:00:0a;
+        fixed-address 192.168.105.20;
+    }
+
+#joyague
+    host joyague {
+        hardware ethernet d4:be:d9:21:ab:6b;
+        fixed-address 192.168.105.21;
+    }
+
+#jmesa
+    host jmesa {
+        hardware ethernet 84:8F:69:D5:12:B3;
+        fixed-address 192.168.105.22;
+    }
+
+#flopez
+    host flopez {
+        hardware ethernet 54:a0:50:3a:09:70;
+	fixed-address 192.168.105.23;
+    }
+
+#free-slot
+    host free-slot {
+        hardware ethernet 04:7d:7b:f7:14:7d;
+        fixed-address 192.168.105.24;
+    }
+
+#mgarcia
+    host mgarcia {
+        hardware ethernet 00:23:18:70:88:93;
+        fixed-address 192.168.105.25;
+    }
+
+#fsalido
+    host fsalido {
+        hardware ethernet 00:23:18:a6:8a:93;
+        fixed-address 192.168.105.26;
+    }
+
+#jruiz
+    host jruiz {
+        hardware ethernet 00:23:8b:8d:d1:74;
+        fixed-address 192.168.105.27;
+    }
+
+#free-slot
+    host free-slot2 {
+        hardware ethernet d4:be:d9:74:af:fe;
+        fixed-address 192.168.105.28;
+    }
+
+#free-slot
+    host free-slot3 {
+        hardware ethernet 14:da:e9:e1:0d:89;
+        fixed-address 192.168.105.36;
+    }
+
+#free-slot
+    host free-slot4 {
+        hardware ethernet 10:BF:48:02:35:E4;
+        fixed-address 192.168.105.38;
+    }
+
+# fdiaz
+    host fdiaz {
+        hardware ethernet d4:be:d9:74:af:f7;
+        fixed-address 192.168.105.29;
+    }
+
+#jipalacios
+    host jipalacios {
+    hardware ethernet 10:bf:48:15:a6:9a;
+        fixed-address 192.168.105.31;
+    }
+
+#mpadilla
+    host mpadilla {
+        hardware ethernet 20:CF:30:E3:9A:6A;
+        fixed-address 192.168.105.32;
+    }
+
+
+#impresoras
+    host fisico-impresora-mojadita {
+        hardware ethernet 00:14:bf:6e:0b:2c;
+        fixed-address 192.168.105.220;
+    }
+
+    host fisico-impresora-colorita {
+        hardware ethernet 00:40:01:2d:1c:8b;
+        fixed-address 192.168.105.221;
+    }
+
+    host fisico-impresora-lorita {
+        hardware ethernet 98:4b:e1:3c:78:d2;
+        fixed-address 192.168.105.222;
+    }
+}
+
+#telefonos VoIP
+    host voip-sistemas {
+        hardware ethernet 00:0b:82:bf:d6:c8;
+        fixed-address 192.168.105.102;
+    }
+    
+    host voip-auditoria {
+        hardware ethernet 00:14:7f:00:60:fb;
+        fixed-address 192.168.105.151;
+    }
+
+    host voip-antifraude {
+        hardware ethernet 00:14:7f:00:14:56;
+        fixed-address 192.168.105.100;
+    }
+
+    host voip-recepcion {
+        hardware ethernet 00:0e:50:4e:be:c7;
+        fixed-address 192.168.105.101;
+    }
+
+    host voip-roman {
+        hardware ethernet 00:0b:82:d4:81:d1;
+        fixed-address 192.168.105.144;
+    }
+
+    host voip-salareuniones {
+        hardware ethernet 00:0b:82:d4:f1:bc;
+        fixed-address 192.168.105.155;
+    }
+
+    host voip-framirez {
+        hardware ethernet 74:65:d1:00:07:a6;
+        fixed-address 192.168.105.153;
+    }
+
+    host voip-comerciales {
+        hardware ethernet 00:0e:50:4e:b1:c7;
+        fixed-address 192.168.105.148;
+    }
+

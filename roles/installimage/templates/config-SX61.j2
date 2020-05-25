@@ -1,0 +1,19 @@
+DRIVE1 /dev/sda
+DRIVE2 /dev/sdb
+DRIVE3 /dev/sdc
+DRIVE4 /dev/sdd
+
+SWRAID 0
+SWRAIDLEVEL 0
+
+BOOTLOADER grub
+
+HOSTNAME {{ inventory_hostname }}
+
+PART /boot ext4 1G
+PART lvm   vg0  all
+
+LV vg0 swap swap swap   8G
+LV vg0 root /    xfs  all
+
+IMAGE /root/images/Debian-94-stretch-64-minimal.tar.gz

@@ -1,0 +1,4 @@
+---
+almacen:
+  role: slave
+  servername: "lmcn7.koodous.com"

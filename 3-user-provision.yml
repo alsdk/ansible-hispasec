@@ -1,0 +1,17 @@
+---
+  - name: Create user {{ username }} on server
+    hosts: ahispasec-mon
+    vars:
+      username: "{{ username }}"
+    tasks:
+      - include_tasks: plays/add_pubkey_ansible.yml
+        tags: ansible_user
+
+      - include_tasks: plays/adduser_system.yml
+        tags: adduser
+
+      - include_tasks: plays/setup-chiringuito.yml
+        tags: chiringuito
+        #    roles:
+        #- sudo
+

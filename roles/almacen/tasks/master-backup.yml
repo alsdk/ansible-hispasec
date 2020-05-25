@@ -1,0 +1,11 @@
+---
+  - name: create syncro user
+    become: yes
+    user:
+      name: syncro
+      state: present
+      shell: /bin/bash
+      password: '$6$rounds=100000$PwTh0oxgk9qYd3Y0$78QW7MryNkVGAvPU6K.IC1ru1boPZFAC2bF6rSn9qQ7D4Mm4GQoBH1oKCuSSmUaYcdTXWANNmg/OatyWTR8n0/'
+      group: www-data
+    tags:
+      - almacen-backup

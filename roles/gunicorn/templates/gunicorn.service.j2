@@ -1,0 +1,33 @@
+[Unit]
+Description = {{ gunicorn_app_name }}
+After=network.target
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+User = {{ gunicorn_user }}
+Group = {{ gunicorn_group }}
+
+PIDFile = /run/{{ gunicorn_app_name }}/{{ gunicorn_app_name }}.pid
+
+PermissionsStartOnly = true
+Restart=always
+
+ExecStartPre = /bin/mkdir /run/{{ gunicorn_app_name }}
+ExecStartPre = /bin/chown -R {{ gunicorn_user }}:{{ gunicorn_group }} /run/{{ gunicorn_app_name }}
+
+ExecStart = /usr/bin/env gunicorn --pid /run/{{ gunicorn_app_name }}/{{ gunicorn_app_name }}.pid --config /etc/gunicorn/{{ gunicorn_app_name }}.py {{ gunicorn_wsgi }}
+ExecReload = /bin/kill -s HUP $MAINPID
+ExecStop = /bin/kill -s TERM $MAINPID
+
+ExecStopPost = /bin/rm -rf /run/{{ gunicorn_app_name }}
+
+WorkingDirectory = {{ gunicorn_app_dir }}
+Environment=PYTHONPATH='/path/to/mysite'
+
+PrivateTmp=true
+
+[Install]
+WantedBy = multi-user.target
+

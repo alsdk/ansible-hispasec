@@ -1,0 +1,7 @@
+---
+  - name: install mongodb
+    hosts: mongotemp
+    # vars:
+    #   username: joyague # ADD USER HERE
+    roles: 
+      - mongodb

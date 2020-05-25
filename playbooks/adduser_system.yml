@@ -1,0 +1,65 @@
+---
+- hosts: koodous-all
+  vars: 
+    users:
+      - username: msalinas
+      - username: framirez
+      - username: asegura
+      - username: joyague
+    users_delete:
+      - username: hispasec-sender
+      - username: malen
+      - username: hispasecadmin
+      - username: mediasync
+      - username: cledesma
+      - username: flopez
+      - username: fsalido
+      - username: backuo
+      - username: dvaca
+      - username: vreyes
+      - username: jalvarez
+      - username: mcorado
+      - username: mgarcia
+      - username: lchannouf
+      - username: mparra
+      - username: fdiaz
+      - username: jcarballo
+      - username: jasanchez
+      - username: fcastillo
+      - username: asanchez
+      - username: jmesa
+  tasks:
+  - name: "Create user on server"
+    user: 
+      # echo -n '%h1sP4s3caNiDaD5691forlaif)' | mkpasswd --method=sha-512 -s
+      name: "{{ item.username }}"
+      groups: sudo
+      password: "$6$jkfP/nOD7$gpVh436t/617UGQ109VZqlF2JUq9QYpzCCqHHB0IIk4AJ1jGHZTnJOaRxdqV.8hHF7mMXDypy4Z0hhDWiMWjM/"
+      shell: /bin/bash
+      append: yes
+      update_password: on_create
+      state: present
+    with_items: '{{users}}'
+    register: user
+  - name: "Force password change on the next login"
+    shell: "passwd -e {{ item.username }}"
+    #when: user.changed
+    with_items: '{{users}}'
+  - name: "Set SSH authorized key for user"
+    authorized_key:
+      user: "{{ item.username }}"
+      state: present
+      key: "{{ lookup('file', 'keyfiles/{{ item.username }}/id_rsa.pub') }}"
+    with_items: '{{users}}'
+  - name: "Delete user from system"
+    user:
+      name: '{{ item.username }}'
+      state: absent
+      remove: no 
+    with_items: '{{users_delete}}'
+  - name: Remove unneeded packages
+    apt:
+      pkg: '{{item}}'
+      state: absent
+    with_items:
+      - nagios-nrpe-server

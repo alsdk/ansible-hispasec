@@ -1,0 +1,6 @@
+auto enp4s0.4000
+iface enp4s0.4000 inet static
+  address {{ ip_address }}
+  netmask 255.255.255.0
+  vlan-raw-device enp4s0
+  mtu 1400

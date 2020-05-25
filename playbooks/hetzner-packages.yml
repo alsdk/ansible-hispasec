@@ -1,0 +1,68 @@
+---
+- hosts: ahispatano
+  gather_facts: no
+  tasks:
+  - name: Bootstrap a host without python2 installed
+    raw: "apt-get update && apt-get -y install python"
+  - name: Gather facts manually
+    setup:
+      gather_subset:
+        - all
+  - name: Install basic packages
+    apt: state=present pkg={{ item }} update_cache=yes
+    with_items:
+      - lsb-release
+      - apt-transport-https
+      - aptitude
+      - sudo
+      - python-pip
+      - vim
+      - screen
+      - htop
+      - tmux
+      - git
+      - zsh
+      - telnet
+      - ftp
+      - netcat
+      - source-highlight
+      - xclip
+      - xauth
+      - p7zip-full
+      - unrar
+      - wget
+      - curl
+      - rsync
+      - htop
+      - iotop
+      - strace
+      - ltrace
+      - whois
+      - screen
+      - iperf
+      - ntpdate
+      - ufw
+      - openvpn
+      - unzip
+      - iptables-persistent
+      - python-virtualenv
+      - virtualenv
+      - virtualenvwrapper
+      - keychain
+      - smartmontools
+      - socat
+      - tcpdump
+  - name: Configure locales
+    locale_gen:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - en_US.UTF-8
+      - es_ES.UTF-8
+  - name: Updating system locales
+    raw: locale-gen
+  - name: Set timezone to Europe/Madrid
+    timezone:
+      name: Europe/Madrid
+  - name: Updating date and time
+    shell: "ntpdate -u pool.ntp.org"

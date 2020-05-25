@@ -1,0 +1,64 @@
+---
+
+# Main
+
+# Regarding general tasks in the infrastructure
+
+# Instalar imagen ISO de Hetzner
+#- import_playbook: 1-installimage.yml
+
+# Instalar utilidades basicas del sistema
+- import_playbook: 2-server_init.yml
+
+# Crear usuario en el server
+#- import_playbook: 3-user_provision.yml
+
+# Update SSL certificates
+#- import_playbook: update_ssl.yml
+
+# Install MongoDB using role
+# - import_playbook: mongodb_install.yml
+
+# First deployment for an nginx + gunicorn + django app stack
+# Needs --extra-vars app=<app_to_deploy>
+#  - import_playbook: django_provision.yml 
+
+# Koodous
+
+# Add admin user
+
+# - import_playbook: koodous_adduser_flopez.yml
+
+# Provision for a warehouse
+# - import_playbook: koodous_lmcn_provision.yml
+
+# Update analyzers VPN after adding a new warehouse
+# - import_playbook: koodous_analyzers_update_openvpn.yml
+
+
+  # - name: execute playbook
+  #   hosts: all
+
+
+    # vars_files:
+      # OJO: Esto es relativo a donde se ejecute el playbook.
+    # vars:
+    #   env: 'hispasec'
+    #   deploy_app: 'panel_iocflow'
+    # -- disable_user.yml
+    #user_to_change: asanchez
+
+    # roles: 
+    #  - debian-base
+
+    # tasks:
+    # roles: 
+    #   - almacen
+
+################################################################################### fetch backup
+    # vars:
+    #   env: "hispasec"
+    # tasks:
+    #  - include: playbooks/zabbix_configuration_aws.yml
+
+

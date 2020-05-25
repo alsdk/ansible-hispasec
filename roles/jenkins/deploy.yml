@@ -1,0 +1,25 @@
+---
+- hosts: 'all'
+  become: true
+  vars:
+    user: docker
+    docker_home: /home/docker/jenkins
+  tasks:
+  - synchronize:
+      src: "./"
+      dest: '{{ docker_home }}'
+  - docker_compose:
+      project_src: '{{ docker_home }}'
+      state: present
+      build: yes
+      restarted: yes
+  - name: Crear subdirectorios para crear ficheros logs
+    file:
+      path: '{{ docker_home }}/data/jenkins/home/'
+      mode: '0777'
+      state: directory
+  - name: Create archivo de logs por bug en permisos
+    file:
+      path: '{{ docker_home }}/data/jenkins/home/copy_reference_file.log'
+      mode: '0777'
+      state: touch

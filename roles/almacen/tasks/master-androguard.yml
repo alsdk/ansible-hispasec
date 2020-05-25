@@ -1,0 +1,69 @@
+---
+  - name: Copying chilkat files
+    command: chdir=/home/develop/warehouse-whitemirlo/birdmagaja/androguard cp chilkat/{{ item }} /home/develop/.virtualenvs/birdmagaja/lib/python2.7/
+      creates=/home/develop/.virtualenvs/birdmagaja/lib/python2.7/{{ item }}
+    with_items:
+      - chilkat.py
+      - _chilkat.so
+
+  - name: Building ahocorasick
+    command: chdir=/home/develop/warehouse-whitemirlo/birdmagaja/androguard/ahocorasick /home/develop/.virtualenvs/birdmagaja/bin/python setup.py build
+
+  - name: Installing ahocorasick
+    command: chdir=/home/develop/warehouse-whitemirlo/birdmagaja/androguard/ahocorasick /home/develop/.virtualenvs/birdmagaja/bin/python setup.py install creates=/home/develop/.virtualenvs/birdmagaja/lib/python2.7/site-packages/ahocorasick
+
+  - name: Install ssdeep
+    pip: chdir=/home/develop/warehouse-whitemirlo/birdmagaja name=ssdeep state=present virtualenv=/home/develop/.virtualenvs/birdmagaja
+    environment:
+      { "BUILD_LIB": "1" }
+
+  - name: Launch /home/develop/warehouse-whitemirlo/birdmagaja/androguard/install.sh
+    shell: "cd /home/develop/warehouse-whitemirlo/birdmagaja/androguard && ./install.sh"
+
+  # - name: download yara 3.4.0
+  #   get_url: url="https://github.com/plusvic/yara/archive/v3.4.0.tar.gz" dest=/opt
+  #   become: yes
+  #   tags:
+  #     - lmcn-yara
+
+  # - name: untar yara 3.4.0
+  #   unarchive: src="/opt/yara-3.4.0.tar.gz" dest=/opt copy=no
+  #   become: yes
+  #   tags:
+  #     - lmcn-yara
+
+# This will work in v2.0 and is a step less
+  # - name: untar yara 3.4.0
+  #   unarchive: src="https://github.com/plusvic/yara/archive/v3.4.0.tar.gz" dest=/opt
+  #   become: yes
+  #   tags:
+  #     - lmcn-yara
+
+  # - name: create ssl certificates folder
+  #   copy: src=envs/koodous/files/ssl dest=/etc/apache2/
+  #   become: yes
+  #   tags:
+  #     - lmcn-config-apache
+
+  # - name: activate modules
+  #   apache2_module: name={{ item }} state=present
+  #   become: yes
+  #   with_items:
+  #     - wsgi
+  #     - ssl
+  #     - headers
+  #   tags:
+  #     - lmcn-config-apache
+
+  # - name: a2ensite 00-birdmagaja.conf
+  #   command: chdir=/etc/apache2/sites-available a2ensite 00-birdmagaja.conf creates=/etc/apache2/sites-enabled/00-birdmagaja.conf
+  #   become: yes
+  #   tags:
+  #     - lmcn-config-apache
+
+  # - name: restart apache2
+  #   service: name=apache2 state=restarted
+  #   become: yes
+  #   tags:
+  #     - lmcn-config-apache
+

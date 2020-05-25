@@ -1,0 +1,70 @@
+---
+  - name: Uploading SSH keys
+    copy: 
+      src: ~/.ssh/{{ item }}
+      dest: ~/.ssh/ 
+      owner: root
+      group: root
+      mode: 0600
+    with_items:
+    - ansible_deploy
+    - ansible_deploy.pub
+
+  - name: Cloning birdmagaja repository
+    git: 
+      repo: "git@github.com:Koodous/warehouse-whitemirlo.git"
+      version: "master"
+      clone: yes
+      update: yes
+      dest: "/home/develop/warehouse-whitemirlo"
+      accept_hostkey: yes
+      key_file: "~/.ssh/ansible_deploy"
+      force: yes
+
+  - name: Installing warehouse-whitemirlo python requirements from /home/develop/warehouse-whitemirlo/birdmagaja/requirements.txt
+    pip:
+      chdir: /home/develop/warehouse-whitemirlo/birdmagaja
+      requirements: requirements.txt
+      state: present
+      virtualenv: /home/develop/.virtualenvs/birdmagaja
+
+  - name: Uploading local_settings.py to /home/develop/warehouse-whitemirlo/birdmagaja/birdmagaja/
+    template: 
+      src: master_local_settings.j2 
+      dest: /home/develop/warehouse-whitemirlo/birdmagaja/birdmagaja/local_settings.py
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Launching genalmacen.sh
+    command: /bin/bash /home/develop/warehouse-whitemirlo/genalmacen.sh
+    args: 
+      chdir: /home/develop/ 
+      creates: almacen
+
+  - name: Ensuring /home/develop/almacen directory is owned by www-data
+    file: 
+      path: /home/develop/almacen
+      owner: www-data 
+      group: www-data
+      mode: 0755 
+      state: directory 
+      recurse: yes
+
+  - name: Creating encryption file
+    lineinfile: 
+      path: /home/develop/secret/iv 
+      line: "sdsddasdsa" 
+      owner: www-data
+      group: www-data
+      mode: 0644
+
+  - name: Add lines to /etc/hosts
+    lineinfile: 
+      path: /etc/hosts
+      line: "176.9.22.99 googleplay.koodous"
+      insertafter: EOF
+      owner: root
+      group: root
+      mode: 0644
+

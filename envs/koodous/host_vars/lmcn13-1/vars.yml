@@ -1,0 +1,6 @@
+---
+is_vm: False
+
+almacen:
+  role: master
+  servername: "lmcn13.koodous.com"

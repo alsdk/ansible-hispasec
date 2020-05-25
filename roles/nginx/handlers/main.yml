@@ -1,0 +1,13 @@
+---
+# handlers file for nginx
+# Start NGINX
+- name: "start nginx"
+  service:
+    name: nginx
+    state: started
+
+# Reload NGINX
+- name: "reload nginx"
+  service:
+    name: nginx
+    state: reloaded

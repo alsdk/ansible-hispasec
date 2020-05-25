@@ -1,0 +1,13 @@
+---
+   -  name: install python packages
+      become: yes
+      package: 
+         name: {{item}} 
+         state: present
+      with_items:
+         -  python
+         -  python-pip
+         -  python-dev
+      tags: 
+         - python
+         - install_python

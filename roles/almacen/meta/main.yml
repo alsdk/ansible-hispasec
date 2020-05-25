@@ -1,0 +1,6 @@
+---
+dependencies:
+  # - { role: debian-base }
+  # - { role: django }
+  # - { role: apache2 }
+  # - { role: rabbitmq }

@@ -1,0 +1,6 @@
+---
+"nagios":
+  "server-name": "eris"
+  "server": "192.168.210.101"
+
+is_vm: 'False'

@@ -1,0 +1,37 @@
+---
+  - name: Installing celery if needed on {{ inventory_hostname }}
+    apt: 
+      state: present
+      pkg: celeryd
+      update_cache: yes
+
+  - name: Uploading celeryd config file to /etc/default/celeryd
+    template:
+      src: master-celeryd.j2
+      dest: /etc/default/celeryd
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: Setting up permissions and ownership for /var/log/birdmagaja dir
+    file:
+      path: /var/log/birdmagaja
+      owner: www-data
+      group: www-data
+      mode: u=rwX,g=rwX,o=rwX
+      recurse: yes
+
+  - name: Setting up permissions and ownership for /var/log/celery dir
+    file:
+      path: /var/log/celery
+      owner: celery
+      group: celery
+      mode: u=rwX,g=rwX,o=rwX
+      recurse: yes
+
+  - name: Enabling celeryd service during boot
+    service:
+      name: "celeryd"
+      state: restarted
+      enabled: yes
+

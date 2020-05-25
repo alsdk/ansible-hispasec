@@ -1,0 +1,17 @@
+---
+- hosts: sentry
+  become: true
+  tasks:
+  - name: Paquetes básicos para Ansible
+    apt: name={{ item }}
+    with_items:
+    - lsb-core
+    - apt-transport-https
+    become: true
+  - name: Actualizar repositorios
+    apt:
+      update_cache: yes
+  - name: Instalar paquetes
+    apt: name={{ item }} state=latest
+    with_items:
+      - nginx

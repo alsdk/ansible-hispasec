@@ -1,0 +1,20 @@
+---
+- name: Upload config file for installimage
+  # template: src=config-{{ servertype }} 
+  template: src=config-{{ servercode }}.j2 dest=/root/config-{{ servercode }}
+  tags: 
+    - installimage
+
+- name: Launching installimage
+  # shell: installimage -a -c /root/config-{{ servertype }} -x postinstal_script.sh -n {{ ansible_hostname }} -b grub -r no -l 0 -i Debian-84-jessie-64-minimal.tar.gz -g
+  shell: /root/.oldroot/nfs/install/installimage -c /root/config-{{ servercode }} -a
+  tags: 
+    - installimage
+
+- name: Server reboot
+  command: reboot
+  async: 0
+  poll: 0
+  ignore_errors: true
+  tags: 
+    - installimage

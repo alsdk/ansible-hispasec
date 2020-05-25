@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - copy:
+      src: 'deploy.sh'
+      dest: '/usr/local/bin/deploy.sh'
+      mode: '0755'

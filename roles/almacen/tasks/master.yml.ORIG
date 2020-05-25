@@ -1,0 +1,10 @@
+---
+#- include: master-dependencies.yml  <-- incluido en rol debian-base
+  # change HOSTNAME in /home/msalinas/ansible/roles/almacen/templates/master_local_settings.j2 (local)
+  # or in /home/develop/warehouse-whitemirlo/birdmagaja/birdmagaja/local_settings.py (remote)
+    #- include: master-deployment.yml 
+    #- include: master-androguard.yml
+    #- include: master-apache.yml
+    - include: master-backup.yml
+
+

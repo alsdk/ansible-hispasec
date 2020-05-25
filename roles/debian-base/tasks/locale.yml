@@ -1,0 +1,15 @@
+- name: Ensure en_US.UTF-8 locale exists
+  locale_gen:
+    name: en_US.UTF-8
+    state: present
+  tags: locale-setup
+
+- name: Ensure es_ES.UTF-8 locale exists
+  locale_gen:
+    name: es_ES.UTF-8
+    state: present
+  tags:  locale-setup
+
+- name: Updating system locales
+  raw: locale-gen
+  tags: locale-setup

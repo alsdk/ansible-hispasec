@@ -1,0 +1,45 @@
+---
+- hosts: 'aceph-node-1'
+  vars:
+    user: www-data
+    dest_path: /tmp/lala
+    venv: /home/develop/.virtualenvs/birdmagaja
+  tasks:
+  - name: Directorio de claves
+    file:
+      path: "/var/www/.ssh"
+      state: directory
+      mode: 0700
+      owner: "{{ user }}"
+      group: "{{ user }}"
+
+  - name: Copiar claves ssh para repositorios
+    copy:
+      src: "{{ item }}"
+      dest: "/var/www/.ssh/{{ item | basename }}"
+      mode: 0600
+      owner: "{{ user }}"
+    with_fileglob:
+      - "keyfiles/warehouse-whitemirlo/*"
+
+  - name: Pull
+    git:
+      repo: git@github.com:Koodous/warehouse-whitemirlo.git
+      dest: "{{ dest_path }}"
+      key_file: "/var/www/.ssh/id_rsa"
+      accept_hostkey: yes
+      recursive: yes
+      track_submodules: yes
+
+  - name: Cambiar permisos del almacen
+    file:
+      path: "{{ dest_path }}"
+      owner: "{{ user }}"
+      group: "{{ user }}"
+      recurse: yes
+
+  - name: Instalar dependencias
+    pip:
+      requirements: '{{ dest_path }}/birdmagaja/requirements.txt'
+      virtualenv: '{{ venv }}'
+      virtualenv_python: python

@@ -1,0 +1,81 @@
+{{ %if nginx_gunicorn% }}
+
+upstream {{ nginx_gunicorn_upstream_name }}_upstream {
+        server unix:/tmp/{{ nginx_gunicorn_upstream_name }}.sock;
+}
+
+{{ endif }}
+
+{% if nginx_ssl %}
+
+# redirect all http traffic to https
+server {
+  listen 80 default_server;
+  listen [::]:80 default_server;
+  server_name {{ nginx_servername }};
+  return 301 https://$host$request_uri;
+}
+
+server {
+
+    # Running port
+    listen {{ ansible_ip }}:443 default_server;
+    server_name {{ nginx_servername }};
+
+    ssl on;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers {{ nginx_ssl_ciphers }};
+    ssl_prefer_server_ciphers on;
+    
+    # Read up on HSTS before you enable it (recommended)
+    add_header Strict-Transport-Security max-age=15768000;
+    ssl_dhparam /etc/nginx/ssl/dhparam.pem;
+    ssl_certificate /etc/nginx/ssl/hispasec_fullchain.crt;
+    ssl_certificate_key /etc/nginx/ssl/hispasec.key;     
+    access_log /var/log/nginx/{{ nginx_servername }}.access.log combined;
+    error_log /var/log/nginx/{{ nginx_servername }}.error.log;
+
+    # Settings to serve static file 
+
+#    location ^~ /static/admin/  {
+#        alias /home/develop/whitemirlo/static_root/admin/;
+#    }
+
+#    location ^~ /static/rest_framework/  {
+#        alias /home/develop/.virtualenvs/whitemirlo/local/lib/python2.7/site-packages/rest_framework/static/rest_framework/;
+#    }
+
+#    location ^~ /static/rest_framework_swagger/  {
+#        alias /home/develop/.virtualenvs/whitemirlo/local/lib/python2.7/site-packages/rest_framework_swagger/static/rest_framework_swagger/;
+#    }
+
+#    location ^~ /static/  {
+#        alias /home/develop/whitemirlo/static_root/;
+#    }
+
+#    location ^~ /media/  {
+#        default_type image/*;   
+#        alias /home/develop/whitemirlo/whitemirlo/media/;
+#    }
+
+{{ if nginx_gunicorn }}
+
+    location / {
+        try_files $uri @{{ nginx_gunicorn_upstream_name }};
+    }
+
+
+    location @{{ nginx_gunicorn_upstream_name }} {
+
+        proxy_http_version 1.1;
+        proxy_redirect     off;
+        proxy_set_header   Host $http_host;
+        proxy_pass         http://{{ nginx_gunicorn_upstream_name }}_upstream;
+    }
+
+{{ endif }}
+
+
+}
+
+

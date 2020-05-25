@@ -1,0 +1,4 @@
+---
+- name: restart nrpe
+  become: yes
+  action: service enabled=yes state=restarted name=nagios-nrpe-server

@@ -1,0 +1,18 @@
+---
+  - name : Create /home/develop directory
+    file:
+      path: /home/develop
+      state: directory
+      owner: root
+      group: root
+
+  - name: Create syncro user
+    user: 
+      name: syncro
+      # echo -n "microKoodousTeamBoat2019" | mkpasswd --method=sha-512 -s
+      password: $6$wkh.n.5TU2f$e07vh4TdM58FvspLqyqHGwl.dhHyYZ.vkh6R8UsKFn0gSG2xNXdVz4/q1KhmDKKFlbvfXPGVo11.cnNLsyLF1/
+      shell: /bin/bash
+      update_password: on_create
+      group: www-data
+      state: present
+

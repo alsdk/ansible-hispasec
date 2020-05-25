@@ -1,0 +1,8 @@
+---
+  - name: Gather /etc/passwd info
+    fetch: src=/etc/passwd dest=revision/passwd_{{ inventory_hostname }} flat=yes
+    become: yes
+
+  - name: Gather /etc/group info
+    fetch: src=/etc/group dest=revision/group_{{ inventory_hostname }} flat=yes
+    become: yes

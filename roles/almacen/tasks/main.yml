@@ -1,0 +1,8 @@
+---
+  - include: common.yml
+
+  - include: master.yml
+    #when: inventory_hostname is match(".*-1")
+
+    #  - include: slave.yml
+    #when: inventory_hostname is match(".*-2")

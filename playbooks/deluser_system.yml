@@ -1,0 +1,6 @@
+---
+  - name: Delete user {{ username }} on server
+    user:
+      name: "{{ username }}"
+      state: "absent"
+

@@ -1,0 +1,37 @@
+---
+- name: Install sudo if needed
+  apt:
+    name: sudo
+    state: present
+    update_cache: yes
+- name: "Update /etc/hosts on all ceph machines"
+  #lineinfile:
+  #path: /etc/hosts
+  #line: "{{ ip_address }}   {{ hostname }}"
+  #state: present
+  #with_items:
+  #- "{{ groups['koodous-ceph'] }}"
+  blockinfile:
+    path: /etc/hosts
+    block: |
+      {{ item.ip }}   {{ item.name }}
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+  with_items:
+    - { name: ceph-monitor-1, ip: 192.168.10.60 }
+    - { name: ceph-monitor-2, ip: 192.168.10.61 }
+    - { name: ceph-monitor-3, ip: 192.168.10.62 }
+    - { name: ceph-node-1, ip: 192.168.10.63 }
+    - { name: ceph-node-2, ip: 192.168.10.64 }
+    - { name: ceph-node-3, ip: 192.168.10.65 }
+    - { name: ceph-node-4, ip: 192.168.10.66 }
+    - { name: ceph-node-5, ip: 192.168.10.67 }
+    - { name: ceph-node-6, ip: 192.168.10.68 }
+    - { name: ceph-node-7, ip: 192.168.10.69 }
+    - { name: ceph-node-8, ip: 192.168.10.70 }
+    - { name: ceph-node-9, ip: 192.168.10.71 }
+    - { name: ceph-node-10, ip: 192.168.10.72 }
+    - { name: ceph-node-11, ip: 192.168.10.73 }
+    - { name: ceph-warehouse, ip: 192.168.10.48 }
+    - { name: googleplay.koodous, ip: 176.9.22.99 }
+
+

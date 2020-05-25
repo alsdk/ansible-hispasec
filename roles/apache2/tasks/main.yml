@@ -1,0 +1,58 @@
+---
+  - name: Instalar apache2
+    apt:  name=apache2 state=present 
+    become: yes 
+
+  # - name: Subir virtualhost
+  #   template: src=00-pools.conf.j2 dest=/etc/apache2/sites-available/00-pools.conf
+  #   become: yes
+
+  - name: Activar modulos
+    apache2_module: name=wsgi state=present
+    become: yes
+
+  # - name: a2ensite 00-pools.conf
+  #   command: chdir=/etc/apache2/sites-available a2ensite 00-pools.conf creates=/etc/apache2/sites-enabled/00-pools.conf
+  #   become: yes
+  #   notify:
+  #     - restart apache2
+
+
+# ---
+#   - name: Install the latest apache2 package
+#     apt:  name=apache2 state=present update_cache=yes
+#     sudo: yes
+#     tags: apache2-install
+
+#   - name: upload apache2 site virtualhost
+#     template: src={{ application.name }}.j2 dest=/etc/apache2/sites-available/{{ application.name }}.conf
+#     become: yes
+#     notify: restart apache2
+#     tags:
+#       - lmcn-config-apache
+
+#   - name: create ssl certificates folder
+#     copy: src={{ inventory_dir }}/files/ssl dest=/etc/apache2/
+#     become: yes
+#     notify: restart apache2
+#     tags:
+#       - lmcn-config-apache
+
+#   - name: activate modules
+#     apache2_module: name={{ item }} state=present
+#     become: yes
+#     notify: restart apache2
+
+#     with_items:
+#       - wsgi
+#       - ssl
+#     tags:
+#       - lmcn-config-apache
+
+#   - name: a2ensite {{ application.name }}
+#     command: chdir=/etc/apache2/sites-available a2ensite {{ application.name }}.conf creates=/etc/apache2/sites-enabled/{{ application.name }}.conf
+#     become: yes
+#     notify: restart apache2
+#     tags:
+#       - lmcn-config-apache
+

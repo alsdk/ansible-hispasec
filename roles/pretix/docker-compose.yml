@@ -1,0 +1,157 @@
+version: '2'
+services:
+
+#  nginx:
+#    # restart: always
+#    container_name: "nginx"
+#    image: "nginx"
+#    volumes:
+#      # We must define an upstream for each gunicorn container
+#      - ./conf/nginx/conf.d:/etc/nginx/conf.d:ro
+#      - ./conf/nginx/ssl:/etc/nginx/ssl:ro
+#      # We must define a site enabled for each gunicorn container
+#      - ./data/nginx/log/:/var/log/nginx/
+#    ports:
+#      - "80:80"
+#      - "443:443"
+#
+#    command: [ 'nginx-debug', '-g', 'daemon off;']
+#
+#    volumes_from:
+#      - bandemo-gunicorn
+#
+#    depends_on:
+#      # Depends on every gunicorn container
+#      - bandemo-gunicorn
+#
+#    networks:
+#      vpcbr:
+#        ipv4_address: 10.5.0.2
+
+### Infrastructure for every client
+  # Each client will have a pair of gunicorn - mysql containers with his own data.
+
+  nginx:
+    restart: on-failure
+    container_name: "nginx"
+    image: "nginx"
+    volumes:
+      - ./conf/nginx/html:/etc/nginx/html:ro
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./conf/nginx/ssl:/etc/nginx/ssl:ro
+      - ./data/nginx/log/:/var/log/nginx/
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - ./data/gunicorn/pretix-data/static:/static
+    ports:
+      - "80:80"
+      - "443:443"
+#    depends_on:
+#      - gunicorn
+
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+
+  gunicorn:
+    restart: on-failure
+    build:
+      context: .
+    volumes:
+      - ./data/gunicorn/pretix-data:/data
+      - ./conf/gunicorn/pretix:/etc/pretix
+
+  task:
+    restart: on-failure
+    build:
+      context: .
+    volumes:
+      - ./data/gunicorn/pretix-data:/data
+      - ./conf/gunicorn/pretix:/etc/pretix
+    entrypoint:
+      - /usr/local/bin/pretix
+      - taskworker
+
+  redis:
+    image: "redis"
+    restart: on-failure
+    #    expose:
+#      - "6379"
+    volumes:
+      - ./data/redis:/data
+
+  postgres:
+    image: postgres
+    restart: on-failure
+
+    volumes:
+      - ./data/postgres/data:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_PASSWORD: jv2BQmCqMRhAA5jjtpZXwT8F
+
+    #  bandemo-gunicorn:
+#    # restart: always
+#    build:
+#      context: .
+#      dockerfile: dockerfiles/gunicorn_Dockerfile
+#      args:
+#         client: bandemo
+#         env: production
+#
+#    container_name: "bandemo-gunicorn"
+##    ports:
+##    - "8000:8000"
+##    - "8080:8080"
+##    expose:
+##      - "8000"
+##      - "8080"
+#    volumes:
+#      - ./app/whitemirlo:/home/develop/whitemirlo
+#      - ./data/gunicorn/bandemo/logs:/var/log/koodous/
+#
+#    depends_on:
+#      - bandemo-mysql
+#
+#    networks:
+#      vpcbr:
+#        ipv4_address: 10.5.0.10
+#
+#  bandemo-mysql:
+#    container_name: "bandemo-mysql"
+#    image: "mysql/mysql-server:5.6"
+#
+##    expose:
+##      - "3306"
+#
+#    volumes:
+#      - ./conf/mysql/my.cnf:/etc/my.cnf:ro
+#      - ./data/mysql/bandemo:/var/lib/mysql
+#    environment:
+#      # MYSQL_ROOT_PASSWORD_FILE: secrets/bandemo_mysql.secrets
+#      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+#      MYSQL_ROOT_HOST: "%"
+#      MYSQL_DATABASE: "bandemo-maia"
+#
+#    networks:
+#      vpcbr:
+#        ipv4_address: 10.5.0.11
+#
+#  bandemo-redis:
+#    container_name: "bandemo-redis"
+#    image: "redis"
+
+#    expose:
+#      - "6379"
+
+#networks:
+#  vpcbr:
+#    driver: bridge
+#    driver_opts:
+#      com.docker.network.enable_ipv6: "false"
+#    ipam:
+#     config:
+#      - subnet: 10.5.0.0/24
+#        gateway: 10.5.0.1

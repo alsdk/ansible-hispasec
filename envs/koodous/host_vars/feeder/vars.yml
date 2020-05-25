@@ -1,0 +1,9 @@
+---
+"application":
+  "name": "feeder"
+  "repo": "git@bitbucket.org:operacioncoconut/feeder.git"
+  "branch": "master"
+  "path": "/home/develop/feeder"
+
+"apache2":
+  "servername": "feeder.koodous.com"

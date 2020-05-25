@@ -1,0 +1,12 @@
+---
+  # - name: check if local folder exists
+  #   local_action: stat path=envs/{{ env }}/files/{{ ansible_hostname }}
+  #   register: hostdir_exists
+
+  # - name: create local folder if it does not exists
+  #   local_action: file state=directory path=envs/{{ env }}/files/{{ ansible_hostname }}
+  #   when: hostdir_exists.stat.exists == False
+
+  - name: fetch backup scripts
+    fetch: "src=/home/backuo/backup.sh dest=roles/27001/files/backup/{{ inventory_hostname }}_backup.sh flat=yes"
+    become: yes

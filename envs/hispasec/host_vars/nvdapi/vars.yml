@@ -1,0 +1,13 @@
+---
+application:
+  name: "nvdapi"
+  repo_url: "git@bitbucket.org:operacioncoconut/nvdapi.git"
+  branch: "master"
+  path: "/home/develop/nvdapi/"
+
+apache2:
+  servername: "nvdapi.hispasec.com"
+
+is_vm: 'False'
+
+# Depedencies: libpq-dev

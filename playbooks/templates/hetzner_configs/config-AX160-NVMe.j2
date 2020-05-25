@@ -1,0 +1,15 @@
+DRIVE1 /dev/nvme0n1
+DRIVE2 /dev/nvme1n1
+
+SWRAID 1
+SWRAIDLEVEL 1
+
+BOOTLOADER grub
+
+HOSTNAME {{ inventory_hostname }}
+
+PART swap swap 2G
+PART /boot ext3 1G
+PART / ext4 all
+
+IMAGE /root/images/Debian-95-stretch-64-minimal.tar.gz

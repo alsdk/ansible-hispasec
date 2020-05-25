@@ -1,0 +1,9 @@
+---
+  - name: Configure OpenVPN for analyzers
+    hosts: akoodous-fwd
+    tasks:
+      - include_tasks: plays/analyzer-vpn-server.yml
+        tags: vpn_server
+      - include_tasks: plays/analyzer-vpn-client.yml
+        tags: vpn_client
+

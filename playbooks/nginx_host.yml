@@ -1,0 +1,13 @@
+---
+  - name: Add mappings to /etc/hosts
+    become: yes
+    lineinfile:
+      dest=/etc/hosts
+      insertbefore=EOF
+      regexp="{{item.name}}$"
+      state=present
+      line="{{item.ip}} {{item.name}}"
+    with_items:
+      - { name: koodous.com, ip: 138.201.35.73 }
+      - { name: api.koodous.com, ip: 138.201.35.73 }
+      - { name: analyst.koodous.com, ip: 138.201.35.73 }

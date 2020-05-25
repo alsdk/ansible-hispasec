@@ -1,0 +1,81 @@
+---
+  - name: "Create group ceph-user if not exist"
+    group:
+      name: ceph-user
+      state: present
+  - name: "Create user ceph-user on server"
+    user:
+      name: ceph-user
+      group: ceph-user
+      groups: "sudo"
+      password: "$6$NsgQHRcb$JIk/MGz.RDi1RzwVtouxhNe3LByN.tT5fke6o8//9VoJaxobDJ2qba6fjUG0DnSWKzcbFxLZH/FSXCzvFmUNT0"
+      shell: /bin/bash
+      append: yes
+      update_password: on_create
+      state: present
+  - name: "Upload ceph-user public key"
+    authorized_key:
+      user: "ceph-user"
+      state: present
+      key: "{{ lookup('file', 'keyfiles/ceph-user/id_rsa.pub') }}"
+  - name: "Add Ceph repository signing key"
+    apt_key:
+      url: "https://download.ceph.com/keys/release.asc"
+      state: present
+      #  - name: "Añadir repositorio Ceph a sources.list"
+    #    apt_repository:
+        #      repo: "deb https://download.ceph.com/debian-luminous/ buster main"
+      #      filename: ceph
+      #      state: present
+      #      update_cache: yes
+  - name: "Upload interfaces file for hetzner vswitch"
+    template:
+      src="templates/ceph/enp4s0.4000.conf.j2"
+      dest="/etc/network/interfaces.d/enp4s0.4000.conf"
+  - name: "Restart network"
+    service:
+      name: networking
+      state: restarted
+  - name: "Edit sudoers file"
+    lineinfile:
+      path: "/etc/sudoers.d/ceph-user"
+      line: 'ceph-user ALL = (root) NOPASSWD:ALL'
+      create: yes 
+      state: present
+  - name: Unmount /data volume
+    mount:
+      path: /data
+      state: unmounted
+  - name: Ceph tuning config in /etc/rc.local
+    blockinfile:
+      path: /etc/rc.local
+      create: yes
+      mode: 0755
+      block: |
+        if test -f /sys/kernel/mm/transparent_hugepage/enabled
+        then
+          echo never > /sys/kernel/mm/transparent_hugepage/enabled
+        fi
+        if test -f /sys/kernel/mm/transparent_hugepage/defrag
+        then
+          echo never > /sys/kernel/mm/transparent_hugepage/defrag
+        fi
+        for i in a b c d e f g h i j
+        do
+          echo 1024 > /sys/block/sd$i/queue/nr_requests
+          echo 8192 > /sys/block/sd$i/queue/read_ahead_kb
+        done
+  - name: Applying Ceph tuning
+    shell: "/bin/sh /etc/rc.local"
+  - name:
+    sysctl:
+      name: vm.swappiness
+      value: 0
+      state: present
+      reload: yes
+  - name: Install ceph-deploy tool
+    apt:
+      name: ceph-deploy
+      state: present
+      update_cache: yes
+

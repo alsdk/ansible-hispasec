@@ -1,0 +1,8 @@
+---
+- import_playbook: packages.yml
+# - import_playbook: system.yml
+# - import_playbook: keys.yml
+- import_playbook: nginx.yml
+- import_playbook: services.yml
+
+# https://github.com/getsentry/onpremise

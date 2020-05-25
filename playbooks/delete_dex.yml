@@ -1,0 +1,39 @@
+---
+  - name: Upload script
+    become: yes
+    template:  
+      src: delete_dex.py.j2
+      dest: /home/develop/almacen/delete_dex.py
+      owner: www-data 
+      group: www-data 
+      mode: 740 
+      backup: yes
+
+  - name: Upload hash lists
+    become: yes
+    copy:  
+      src: "dex_{{ inventory_hostname | regex_replace('-.*$') }}.txt" 
+      dest: "/home/develop/almacen/{{ inventory_hostname | regex_replace('-.*$') }}.txt"
+      owner: www-data 
+      group: www-data 
+      mode: 740 
+      backup: yes
+
+  - name: Create index file
+    become: yes
+    copy:
+      content: ""
+      dest: /home/develop/almacen/index.txt
+      force: yes
+      owner: www-data
+      group: www-data
+      mode: 777 
+
+  - name: Execute...
+    become: yes
+    shell: /home/develop/almacen/delete_dex.py
+    args:
+      chdir: /home/develop/almacen/
+      executable: /bin/bash
+    async: 100
+    poll: 0

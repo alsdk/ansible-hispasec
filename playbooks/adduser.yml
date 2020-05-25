@@ -1,0 +1,92 @@
+---
+- hosts: ahispasec-lsimatch
+  vars:
+    username: msalinas
+    chiringuito: true
+  tasks:
+  - name: Check if /root/.ssh dir exists
+    file:
+      path: "/root/.ssh"
+      state: directory
+  - name: Check if /root/.ssh/authorized_keys exists
+    file:
+      path: "/root/.ssh/authorized_keys"
+      state: touch
+  - name: "Add Ansible root public key to server"
+    authorized_key:
+      user: "root"
+      state: present
+      key: "{{ lookup('file', 'keyfiles/root/id_rsa_hispansible.pub') }}"
+  - name: "Install zsh if needed on {{ inventory_hostname }}"
+    apt:
+      name: zsh
+      state: present
+  - name: "Create group {{ username }} if not exist"
+    group:
+      name: "{{ username }}"
+      state: present
+  - name: "Create user {{ username }} on server"
+    user:
+      # echo -n "koodoussteamboat2018micro" | mkpasswd --method=sha-512 -s
+      name: "{{ username }}"
+      group: "{{ username }}"
+      groups: sudo
+      password: "$6$CZiwhC6k$xDnVEviw21ETVsBCpTFroUtqdi.w.s8jU9IlnK.zC1mBK5/n7NWt5JbFK8nu7glEGm0LzVJaBgUbxQiFyf.ck/"
+      shell: /bin/bash
+      append: yes
+      update_password: on_create
+      state: present
+  - name: "Change shell to zsh"
+    user:
+      name: "{{ username }}"
+      shell: /bin/zsh
+    when: chiringuito
+  - name: "Set SSH personal key for user {{ username }}"
+    authorized_key:
+      user: "{{ username }}"
+      state: present
+      key: "{{ lookup('file', 'keyfiles/{{ username }}/id_rsa.pub') }}"
+  - name: "Copy .zshrc to {{ username }} home dir on remote server"
+    copy:
+      src: "~/.zshrc"
+      dest: "/home/{{ username }}/.zshrc"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    when: chiringuito
+  - name: "Copy .oh-my-zsh dir to {{ username }} home dir on remote server"
+    synchronize:
+      src: "~/.oh-my-zsh"
+      dest: "/home/{{ username }}"
+    when: chiringuito
+  - name: "Setting permsissions for ~/.oh-my-zsh dir"
+    file:
+      dest: "/home/{{ username }}/.oh-my-zsh"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      recurse: yes
+    when: chiringuito
+  - name: "Copy .vimrc to {{ username }} home dir on remote server"
+    copy:
+      src: "~/.vimrc"
+      dest: "/home/{{ username }}/.vimrc"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    when: chiringuito
+  - name: "Copy .tmux.conf to {{ username }} home dir on remote server"
+    copy:
+      src: "~/.tmux.conf"
+      dest: "/home/{{ username }}/.tmux.conf"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0644
+    when: chiringuito
+  - name: "Copy .tmux directory to {{ username }} home dir on remote server"
+    copy:
+      src: "~/.tmux"
+      dest: "/home/{{ username }}"
+      owner: "{{ username }}"
+      group: "{{ username }}"
+      mode: 0655
+    when: chiringuito

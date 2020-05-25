@@ -1,0 +1,12 @@
+---
+application:
+  name: "whitemirlo"
+  repo_url: "git@bitbucket.org:operacioncoconut/whitemirlo.git"
+  branch: "develop"
+  path: "/home/develop/whitemirlo/"
+
+apache2:
+  servername: "hispatano.hispasec.com"
+
+ssl: False
+

@@ -1,0 +1,7 @@
+---
+- name: Install Ceph packages
+  shell: "ceph-deploy install --no-adjust-repos {{ hostname }}"
+
+- name: "Push configuration and client.admin.key to {{ hostname }}"
+  shell: "cd /home/ceph-user && ceph-deploy admin {{ hostname }}"
+

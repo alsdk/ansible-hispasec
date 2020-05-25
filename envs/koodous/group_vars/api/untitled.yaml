@@ -1,0 +1,11 @@
+application:
+  name:
+    git: repo={{ application.repo_url }}
+         version={{ application.branch }}
+         clone=yes
+         dest="{{ application.path }}"
+         accept_hostkey=yes
+         key_file="~/.ssh/ansible_deploy"
+    become: yes
+    tags:
+      - git-clone-repo

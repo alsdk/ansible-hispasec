@@ -1,0 +1,6 @@
+---
+is_vm: False
+
+almacen:
+  role: slave
+  servername: "lmcn15.koodous.com"

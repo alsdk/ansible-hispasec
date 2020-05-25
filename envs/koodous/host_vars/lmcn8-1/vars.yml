@@ -1,0 +1,6 @@
+---
+almacen:
+  role: master
+  servername: "lmcn8.koodous.com"
+
+is_vm: 'False'

@@ -1,0 +1,11 @@
+---
+application:
+  name: "panel"
+  repo_url: "git@bitbucket.org:operacioncoconut/panel.git"
+  branch: "develop"
+  path: "/home/develop/panel/"
+
+apache2:
+  servername: "panel.dev.hispasec.com"
+
+is_vm: 'True'

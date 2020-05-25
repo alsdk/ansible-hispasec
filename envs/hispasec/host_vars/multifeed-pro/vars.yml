@@ -1,0 +1,22 @@
+---
+
+application:
+  multifeed:
+    repo_url: "git@bitbucket.org:operacioncoconut/multifeed.git"
+    branch: "master"
+    path: "/home/develop/multifeed/"
+    local_settings_path: "/home/develop/multifeed/multifeed"
+
+
+  panel_iocflow:
+    repo_url: "git@bitbucket.org:entdark/panel_iocflow.git"
+    branch: "devel"
+    path: "/home/develop/panel_iocflow/"
+    local_settings_path: "/home/develop/panel_iocflow/panel"
+
+apache2:
+  servername: "nvdapi.hispasec.com"
+
+is_vm: 'False'
+
+# Depedencies: libpq-dev

@@ -1,0 +1,16 @@
+---
+  - name: Install python2
+    apt:
+      name: python
+      state: present
+      update_cache: yes
+    tags:
+      - pre-setup
+
+  - name: Install sudo
+    apt:
+      name: sudo
+      state: present
+      update_cache: yes
+    tags:
+      - pre-setup

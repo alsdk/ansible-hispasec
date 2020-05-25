@@ -1,0 +1,14 @@
+---
+  - name: Upload OpenVPN configuration file on koodous-fwd
+    template:
+      src: openvpn/servers/koodous-fwd-vpn-server.conf.j2
+      dest: /etc/openvpn/koodous-fwd-vpn-server.conf
+      mode: 0644
+      owner: root
+      group: root
+
+  - name: Restart OpenVPN server on koodous-fwd
+    service:
+      name: openvpn@server
+      state: restarted
+

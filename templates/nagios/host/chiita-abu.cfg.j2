@@ -1,0 +1,4 @@
+# {{ ansible_managed }}
+
+command[check_celery]=/usr/lib/nagios/plugins/check_procs -a celery -w 3:120 -c 1:150
+command[check_total_procs_chiita]=/usr/lib/nagios/plugins/check_procs -w 300 -c 350

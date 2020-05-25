@@ -1,0 +1,7 @@
+---
+  - name: Provisioning Debian system
+    hosts: aceph-node-9
+    gather_facts: no
+    roles: 
+      - debian-base
+      #- mongodb

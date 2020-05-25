@@ -1,0 +1,20 @@
+# docker-compose Nginx
+version: '3.7'
+
+services:
+  nginx:
+    restart: on-failure
+    image: jwilder/nginx-proxy
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d
+      - ./conf/nginx/ssl:/etc/nginx/certs
+    networks:
+      - nginx-proxy
+networks:
+  nginx-proxy:
+    driver: bridge
+    name: nginx-proxy

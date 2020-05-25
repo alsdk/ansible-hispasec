@@ -1,0 +1,12 @@
+---
+application:
+  name: "hispatano"
+  repo_url: "git@bitbucket.org:operacioncoconut/hispatano.git"
+  branch: "master"
+  path: "/home/develop/hispatano/"
+
+apache2:
+  servername: "hispatano.hispasec.com"
+
+ssl: False
+

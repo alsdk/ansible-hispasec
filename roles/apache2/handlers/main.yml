@@ -1,0 +1,4 @@
+---
+  - name: restart apache2
+    action: service enabled=yes state=restarted name=apache2
+    become: yes

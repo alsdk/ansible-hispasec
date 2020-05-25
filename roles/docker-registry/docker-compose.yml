@@ -1,0 +1,31 @@
+version: '3'
+services:
+  nginx:
+    restart: always
+    image: "nginx"
+    volumes:
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./conf/nginx/ssl:/etc/nginx/ssl
+      - ./data/nginx/log/:/var/log/nginx/
+    depends_on:
+      - registry
+    ports:
+      - "80"
+      - "444:444"
+    command: [ 'nginx-debug', '-g', 'daemon off;']
+    environment:
+      VIRTUAL_HOST: docker.koodous.com
+    networks:
+      - nginx-proxy
+      - default
+  registry:
+    restart: always
+    image: "registry"
+    volumes:
+      - ./data:/data
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /data
+networks:
+  nginx-proxy:
+    external:
+      name: nginx-proxy

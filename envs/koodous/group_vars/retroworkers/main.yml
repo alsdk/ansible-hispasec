@@ -1,0 +1,32 @@
+---
+  # deployment:
+app_name: 'retroworker'
+app_repo_url: 
+app_branch: 'master'
+app_working_dir: '/home/develop/retroworker'
+
+app_requires_apache: false
+app_requires_mysql: false
+app_requires_celery: false
+app_requires_virtualenv: true
+
+gunicorn_app_name: {{ app_name }}
+gunicorn_user: 'gunicorn'
+gunicorn_group: 'gunicorn'
+gunicorn_dynamic_workers: true 
+gunicorn_cpu_coefficient: 2
+gunicorn_workers: 8
+gunicorn_workers_class: 'sync' 
+gunicorn_workers_timeout: 60
+gunicorn_bind: 'unix://tmp/retroworker.sock'
+gunicorn_accesslog: '/var/log/gunicorn/retroworker.access.log'
+gunicorn_errorlog: '/var/log/gunicorn/retroworker.error.log'
+gunicorn_loglevel: 'info'
+gunicorn_app_dir: {{ app_working_dir }}
+gunicorn_wsgi: 'wsgi.py'
+
+
+nginx_gunicorn: true
+nginx_servername: "nginx.test"
+nginx_ssl_enable: true 
+nginx_gunicorn_upstream_name: {{ app_name }}

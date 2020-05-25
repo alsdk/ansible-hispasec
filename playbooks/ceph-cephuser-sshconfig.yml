@@ -1,0 +1,15 @@
+---
+- name: "Update ceph-user ssh config in ceph-monitor-1"
+  #template:
+  #  src="templates/ceph/cephuser-ssh.config.j2"
+  #  dest="/home/ceph-user/.ssh/config"
+  blockinfile:
+    path: /home/ceph-user/.ssh/config
+    block: |
+        Host "{{ hostname }}"
+        User ceph-user
+        HostName "{{ ip_address }}"
+        IdentityFile ~/.ssh/id_rsa_ceph
+    marker: "# {mark} ANSIBLE MANAGED BLOCK {{ hostname }}"
+
+

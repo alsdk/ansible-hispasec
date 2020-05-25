@@ -1,0 +1,7 @@
+---
+  - name: create warehouse 
+    hosts: lmcn15
+    # vars:
+    #   username: joyague # ADD USER HERE
+    roles: 
+      - almacen

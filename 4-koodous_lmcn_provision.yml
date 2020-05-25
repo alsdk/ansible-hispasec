@@ -1,0 +1,22 @@
+---
+  # -Change HOSTNAME to point to new warehouse in 
+  # /home/msalinas/ansible/roles/almacen/templates/master_local_settings.j2 (local)
+  # or in /home/develop/warehouse-whitemirlo/birdmagaja/birdmagaja/local_settings.py (remote)
+  # -Change ServerName in /home/msalinas/ansible/roles/almacen/templates/00-birdmagaja.j2 (local)
+  # o (remoto) /etc/apache2/sites-enabled/00-birdmagaja.conf
+  # -No olvidar hacer login con el usuario syncro (en bash) la primera vez para que se cree el dir ~/keychain 
+  #
+  # A PROD:
+  # -Ir a koodous-nginx para añadir el nuevo almacen:
+  # /home/develop/whitemirlo/whitemirlo/local_settings.py
+  # -Poner el nuevo almacen en la BBDD koodous-mysql-slave1:
+  # mysql -u mirlo_user -p -P 44306 -h 127.0.0.1
+  # INSERT INTO dispatcher_server (id, name, domain, ip) VALUES (19, lmcn19.koodous.com, lmcn19.koodous.com, 1.2.3.4)
+  # -Reiniciar gunicorn en koodous-nginx
+  # -Actualizar registro A en godaddy
+  - name: Creating warehouse in {{ inventory_hostname }}
+    hosts: aceph-node-1
+    # vars:
+    #   username: joyague
+    roles: 
+      - almacen

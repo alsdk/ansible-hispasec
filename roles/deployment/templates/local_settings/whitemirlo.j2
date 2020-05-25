@@ -1,0 +1,273 @@
+from django.http import UnreadablePostError
+
+def skip_unreadable_post(record):
+    if record.exc_info:
+        exc_type, exc_value = record.exc_info[:2]
+        if isinstance(exc_value, UnreadablePostError):
+            return False
+    return True
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'pbj6%^+tyw1j3uftcpr94-^=d^t)*up^m#u!^+)9s3@yp*&yk!'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'whitemirlo2',                      # Or path to database file if using sqlite3.
+        'USER': 'mirlo_user',                      # Not used with sqlite3.
+        'PASSWORD': 'YQ44>Xw(j+_sr|#V[V3',                  # Not used with sqlite3.
+        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+  'CONN_MAX_AGE': 60,
+    },
+    'mysql-slave1': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'whitemirlo2',                      # Or path to database file if using sqlite3.
+        'USER': 'mirlo_user',                      # Not used with sqlite3.
+        'PASSWORD': 'Rioe<a/7xDQL/##V',                  # Not used with sqlite3.
+        'HOST': '138.201.85.92',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '44306',                      # Set to empty string for default. Not used with sqlite3.
+        'CONN_MAX_AGE': 60,
+    },
+    'mysql-slave2': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'whitemirlo2',                      # Or path to database file if using sqlite3.
+        'USER': 'mirlo_user',                      # Not used with sqlite3.
+        'PASSWORD': 'Rioe<a/7xDQL/##V',                  # Not used with sqlite3.
+        'HOST': '136.243.44.37',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '44306',                      # Set to empty string for default. Not used with sqlite3.
+        'CONN_MAX_AGE': 60,
+    }
+}
+
+
+SLAVE_DATABASES = ['mysql-slave2','mysql-slave1',]
+#SLAVE_DATABASES = ['mysql-slave2',]
+DATABASE_ROUTERS = ['whitemirlo.router.PinningDefaultReplicaRouter']
+USE_DEFAULT_DB_IPS = ['149.202.184.72',]
+
+MULTIDB_PINNING_SECONDS = 60
+
+#BROKER_URL = 'amqp://guest@localhost//'
+
+# Dispatcher conf
+STATIC_ROOT = "/home/develop/whitemirlo/static_root/"
+SECRET = 'miraalcielopunkymiraalcielopunky'   # Clave de cifrado
+TIME_DWN = 180            # Segundos permitidos para descargar el fichero
+TIME_UPL = 3600           # Segundos permitidos para subir el fichero
+ALMACENES = "lmcn6.koodous.com"
+
+VERSION = "1.30.2"
+DEBUG = False
+
+GCM_SERVER_API_KEY = "AIzaSyC0fiXQt28w5QpEUFmbOAIjWVCzAqy8OWo"
+
+ALLOWED_HOSTS = ["whitemirlo.hispasec.com", "whitemirlo.birdmagaja.com", "koodous.com", "www.koodous.com", "api.koodous.com", "analyst.koodous.com"]
+
+ADMINS = (('Dani','dvaca@hispasec.com'), ('Fernando', 'framirez@hispasec.com'), ('Pako','flopez@hispasec.com'), ('Antonio','asanchez@hispasec.com'))
+
+MEDIA_URL = "https://cdn1.koodous.com/"
+#DEFAULT_FILE_STORAGE = 'whitemirlo.storage.MediaFileSystemStorage'
+DEFAULT_FILE_STORAGE = 'whitemirlo.storage.SFTPMediaPipelineCachedStorage'
+SFTP_STORAGE_HOST = "push-20.cdn77.com"
+SFTP_STORAGE_ROOT = "/www/"
+SFTP_STORAGE_PARAMS = {"username":"user_sks2n0ve", "password":"85Cxa1QW9k1TRZ8zQ6Q9"}
+
+#GOOGLE_PLAY_METADATA_DB_IP = "176.9.17.77"
+GOOGLE_PLAY_METADATA_DB_IP = "144.76.185.36"
+GOOGLE_PLAY_METADATA_DB_PORT = 27017
+
+ANALYSIS_SERVER_DB_IP = "178.63.69.8"
+ANALYSIS_SERVER_DB_PORT = 27017
+
+ANALYSIS_SERVICE_IP = "188.166.34.27"
+ANALYSIS_SERVICE_PORT = 9090
+
+STRINGS_SERVER_URL = "http://188.166.121.171:9090/strings/"
+
+RULESET_CHECKER_URL = "http://188.166.67.142:9090/social_check/"
+
+#Email settings
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SERVER_EMAIL = "info@koodous.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "info@koodous.com"
+EMAIL_HOST_PASSWORD = "ohG4iBSd\'m-Um\'9\\"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_FROM = "Koodous.com <no-reply@koodous.com>"
+DEFAULT_FROM_EMAIL = "Koodous.com <no-reply@koodous.com>"
+
+CACHES = {
+   "default": {
+       "BACKEND": "django_redis.cache.RedisCache",
+       "LOCATION": "redis://127.0.0.1:6379/1",
+       "OPTIONS": {
+           "CLIENT_CLASS": "django_redis.client.DefaultClient",
+       }
+   }
+}
+
+CACHEOPS_DEFAULTS = {
+    'timeout': 60*60
+}
+
+CACHEOPS_REDIS = {
+    'host': '127.0.0.1', # redis-server is on same machine
+    'port': 6379,        # default redis port
+    'db': 1,             # SELECT non-default redis database
+                         # using separate redis db or redis instance
+                         # is highly recommended
+}
+CACHEOPS = {
+    'frontend.apk': {'ops': 'fetch', 'timeout': 60*30},
+    'frontend.*': {'ops':'all', 'timeout':60*5},
+    '*.*': {'timeout': 60*15},
+}
+
+REST_FRAMEWORK = {
+    'PAGE_SIZE': 25,
+    'MAX_PAGINATE_BY': 100,
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    ),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework.filters.DjangoFilterBackend',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'api.throttling.BasicThrottle',
+        'api.throttling.BronzeThrottle',
+        'api.throttling.SilverThrottle',
+        'api.throttling.GoldThrottle',
+    ),
+    'DEFAULT_THROTTLE_RATES': {
+        # Superusers unlimited
+
+        # Anon users
+        'anon': '60/min',
+
+        # Basic users
+        'basic': '100/min',
+        'basic_apks': '60/min',
+        'basic_apk_downloads': '50/day',
+        'basic_analysis_requests': '50/day',
+  'basic_analysis_get': '200/day',
+
+        # Bronze users
+        'bronzeapi': '100/min',
+        'bronzeapi_apks': '100/min',
+        'bronzeapi_apk_downloads': '500/day',
+        'bronzeapi_analysis_requests': '250/day',
+  'bronzeapi_analysis_get': '300/day',
+
+        # Silver users
+        'silverapi': '150/min',
+        'silverapi_apks': '150/min',
+        'silverapi_apk_downloads': '1000/day',
+        'silverapi_analysis_requests': '500/day',
+  'silverapi_analysis_get': '1000/day',
+
+        # Gold users
+        'goldapi': '200/min',
+        'goldapi_apks': '200/min',
+        'goldapi_apk_downloads': '2000/day',
+        'goldapi_analysis_requests': '1000/day',
+  'goldapi_analysis_get': '2000/day',
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_unreadable_post,
+        }
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+   'file': {
+           'level': 'DEBUG',
+           'class': 'logging.FileHandler',
+           'filename': '/home/develop/whitemirlo/whitemirlo/log/debug.log',
+       }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'filters': ['skip_unreadable_posts'],
+            'propagate': False,
+        },
+        'koodous': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        }
+    }
+}
+
+#SUBDOMAINS
+REMOVE_WWW_FROM_DOMAIN = True
+BASE_DOMAIN = "koodous.com"
+SUBDOMAIN_URLCONFS = {
+    None: 'whitemirlo.urls',
+    'analyst': 'frontend.urls',
+    'api': 'api.urls',
+}
+#SESSION_COOKIE_DOMAIN = 'analyst.koodous.com'
+BASE_API_URL = 'https://api.koodous.com'
+BASE_PANEL_URL = 'https://analyst.koodous.com/'
+
+CELERY_SEND_TASK_ERROR_EMAILS = True
+
+SIMULATE_STORAGE = False
+OVH_OPS_VERSION = "1"
+OVH_OPS_ZONE = "gra1"
+OVH_OPS_TENANT_ID = "38d9c6ec3886404a9d0e56c765f3d18b"
+OVH_OPS_USER = "2M4EAH6tcgVD"
+OVH_OPS_PASSWORD = "hKmD4MrgkZsQktAm39bjTfwXbDGcfG7b"
+OVH_OPS_TOKEN_OPS = "5050a65c654242689eab86981aee7ab2"
+OVH_OPS_TENANT_NAME = "3745349725041522"
+OVH_OPS_LIFETIME_FILE = (3600 * 24) * 7 # week
+OVH_OPS_LIFETIME_URL = 3600 * 2 # 2 hours
+OVH_OPS_CONTAINER_NAME_APK = "apk"
+OVH_OPS_CONTAINER_NAME_FEED_APK = "feed-apk"
+OVH_OPS_CONTAINER_NAME_FEED_ANALYSIS = "feed-analysis"

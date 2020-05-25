@@ -1,0 +1,35 @@
+---
+
+  - name: upload check_http_json.py
+    become: yes
+    copy: src={{ item }} dest=/usr/lib/nagios/plugins/ owner=root group=root mode=0755
+    with_items:
+      - check_http_json.py
+      - check_numoffolders.sh
+    tags:
+      - monitoring
+
+  - name: upload analyzers.cfg file for analyzer checks
+    become: yes
+    template: src=monitoring/analyzers.cfg dest=/etc/nagios/nrpe.d/analyzers.cfg owner=root group=root mode=0644
+    tags:
+      - monitoring
+
+  - name: restart nrpe
+    service: name=nagios-nrpe-server state=restarted
+    become: yes
+    tags:
+      - monitoring
+
+  # - name: upload base configuration for each server
+  #   become: yes
+  #   template: src=server/{{ ansible_hostname }}.cfg dest=/etc/nagios/ owner=root group=root mode=0644
+
+  # - name: install packages
+  #   become: yes
+  #   apt: state=latest pkg={{ item }} update_cache=yes
+  #   with_items:
+  #     - nagios-nrpe-server
+  #     - nagios-plugins
+  #   tags:
+  #     - packages

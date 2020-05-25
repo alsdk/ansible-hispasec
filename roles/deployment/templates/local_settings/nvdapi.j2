@@ -1,0 +1,40 @@
+DEBUG = True
+
+BROKER_URL = 'amqp://guest@localhost//'
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 'Kl0M37mDFXI2N0zNuAjNBwl5gU28ZMetQYYg3UrD56GsqfguQMpA38dDjr81'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'nvdapi',                      # Or path to database file if using sqlite3.
+        'USER': 'root',                      # Not used with sqlite3.
+        'PASSWORD': 'dFwj9vH4',                  # Not used with sqlite3.
+        'HOST': '127.0.0.1',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    },
+}
+
+ADMINS = [('dvaca', 'dvaca@hispasec.com'),]
+
+NOTIFICATIONS_API_URL = "https://notifications.csirt.hispasec.com/pending_notifications"
+NOTIFICATIONS_API_TOKEN = "31f8271f5bc601e1f218f25100f6f342091e7e5e"
+
+#Email settings
+SERVER_EMAIL = "gta@paperboy.hispasec.com"
+EMAIL_HOST = "paperboy.hispasec.com"
+EMAIL_HOST_USER = "gta@paperboy.hispasec.com"
+EMAIL_HOST_PASSWORD = "A2S^O!DLbZ.b"
+EMAIL_PORT = 25
+EMAIL_USE_TLS = True
+EMAIL_FROM = "NVD API <nvdapi@hispasec.com>"
+DEFAULT_FROM_EMAIL = "NVD API <nvdapi@hispasec.com>"

@@ -1,0 +1,15 @@
+---
+  - include: install-basic-packages.yml
+    tags: base-setup
+
+  - include: locale.yml
+    tags: locale-setup
+
+  - include: timezone.yml
+    tags: timezone-setup
+
+  - include: hdd-monitor.yml
+    tags: hdd-monitor
+
+    #  - include: monitoring.yml
+    #    tags: monitoring

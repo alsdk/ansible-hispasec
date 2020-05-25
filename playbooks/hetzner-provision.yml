@@ -1,0 +1,102 @@
+---
+- hosts: aceph-node-11
+  vars:
+    servercode: SX132
+    username: msalinas
+  gather_facts: no
+  tasks:
+  - name: Upload config file for installimage
+    template: 
+      src="templates/hetzner_configs/config-{{ servercode }}.j2"
+      dest="/root/config-{{ servercode }}"
+  - name: Launching installimage
+    shell: "/root/.oldroot/nfs/install/installimage -c /root/config-{{ servercode }} -a"
+  - name: Server reboot
+    reboot:
+      reboot_timeout: 3600
+  - name: Bootstrap a host without python2 installed
+    raw: "apt-get update && apt-get -y install python"
+    tags: init
+  - name: Gather facts manually
+    setup:
+      gather_subset:
+        - all
+    tags: init
+  - name: "Create group {{ username }}"
+    group:
+      name: "{{ username }}"
+      state: present
+    tags: init
+  - name: "Create user {{ username }} on server"
+    user:
+      # echo -n "koodoussteamboat2018micro" | mkpasswd --method=sha-512 -s
+        name: "{{ username }}"
+        group: "{{ username }}"
+        groups: sudo
+        password: "$6$CZiwhC6k$xDnVEviw21ETVsBCpTFroUtqdi.w.s8jU9IlnK.zC1mBK5/n7NWt5JbFK8nu7glEGm0LzVJaBgUbxQiFyf.ck/"
+        shell: /bin/bash
+        append: yes
+        update_password: on_create
+        state: present
+    tags: init
+  - name: Install basic packages
+    apt: state=present pkg={{ item }} update_cache=yes
+    with_items:
+      - lsb-release
+      - apt-transport-https
+      - sudo
+      - python-pip
+      - vim
+      - screen
+      - htop
+      - tmux
+      - git
+      - zsh
+      - telnet
+      - ftp
+      - netcat
+      - source-highlight
+      - xclip
+      - xauth
+      - p7zip-full
+      - unrar
+      - wget
+      - curl
+      - rsync
+      - htop
+      - iotop
+      - strace
+      - ltrace
+      - whois
+      - screen
+      - iperf
+      - ntpdate
+      - ufw
+      - openvpn
+      - unzip
+      - iptables-persistent
+      - python-virtualenv
+      - virtualenv
+      - virtualenvwrapper
+      - keychain
+      - smartmontools
+      - socat
+    tags: init
+  - name: Configure locales
+    locale_gen:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - en_US.UTF-8
+      - es_ES.UTF-8
+    tags: init
+  - name: Updating system locales
+    raw: locale-gen
+    tags: init
+  - name: Set timezone to Europe/Madrid
+    timezone:
+      name: Europe/Madrid
+    tags: init
+  - name: Updating date and time
+    shell: "ntpdate -u pool.ntp.org"
+    tags: init

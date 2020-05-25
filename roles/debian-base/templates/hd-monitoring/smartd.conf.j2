@@ -1,0 +1,8 @@
+
+
+{% for disk in smart.results %}
+{% if 'SMART support is: Available' in disk.stdout  %}
+/dev/{{ disk.item }} -a -d sat -o on -S on -s (S/../../6/05|L/../01/./05) -m
+sgsi@hispasec.com -M exec /usr/share/smartmontools/smartd-runner
+{% endif %}
+{% endfor %}

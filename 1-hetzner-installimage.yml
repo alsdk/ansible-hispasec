@@ -1,0 +1,15 @@
+---
+  - name: provision a Hetzner server
+    # Server to provision. Remember to execute create_host.sh first.
+    # Also, it is needed to add ansible_remote_user: root to the inventory record. 
+    hosts: ahispasec-mon
+
+    # Change servercode to choose the configuration file.
+    # Available:
+    #   - PX91
+    #   - SX61
+    #   - ES41S
+    vars:
+      servercode: "EX41S-SSD"
+    roles:
+        - installimage

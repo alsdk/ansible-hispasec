@@ -1,0 +1,34 @@
+---
+  - name: install smartmontools
+    become: yes
+    apt: state=present pkg=smartmontools update_cache=no
+    tags:
+      - hd-monitoring
+
+  # Broken in ansible 2.3. Find a workaround
+  # - name: check if devices support smartmontools
+  #   become: yes
+  #   shell: "smartctl -i /dev/{{ item }}"
+  #   register: smart
+  #   when: vars['ansible_devices.' ~ item  ~ '.removable' != '1')
+  #   with_items: "{{ ansible_devices.keys() }}"
+  #   tags:
+  #     - hd-monitoring
+
+  # - debug: var=smart
+  #   tags:
+  #     - hd-monitoring
+
+  # - name: activate smart
+  #   become: yes
+  #   shell: "smartctl -s on /dev/{{ item.item }}"
+  #   when: "(('SMART support is: Available' in item.stdout) and not (item.skipped is defined))"
+  #   with_items: "{{ smart.results }}"
+  #   tags:
+  #     - hd-monitoring
+
+  # - name: upload smartd conf
+  #   become: yes
+  #   template: src=hd-monitoring/smartd.conf.j2 dest=/etc/smartd.conf owner=root group=root mode=755 backup=yes
+  #   tags:
+  #     - hd-monitoring

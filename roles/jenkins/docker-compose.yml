@@ -1,0 +1,43 @@
+version: '3'
+services:
+
+  nginx:
+    restart: always
+    image: "nginx"
+    volumes:
+      - ./conf/nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./data/nginx/log/:/var/log/nginx/
+    depends_on:
+      - jenkins
+    ports:
+      - "80"
+      - "443"
+    command: [ 'nginx-debug', '-g', 'daemon off;']
+    environment:
+      VIRTUAL_HOST: jenkins.koodous.com
+    networks:
+      - nginx-proxy
+      - default
+  jenkins:
+    restart: always
+    image: "jenkins/jenkins"
+    ports:
+      - 8080
+      - 50000
+    volumes:
+      - ./data/jenkins/home:/var/jenkins_home
+  jenkins-worker:
+    depends_on:
+      - jenkins
+    build:
+      dockerfile: compose/jenkins-slave/Dockerfile
+      context: .
+    environment:
+      JENKINS_URL: "http://jenkins_jenkins_1:8080"
+      JENKINS_AGENT_NAME: jenkins-worker
+      JENKINS_SECRET: dd6189c7ec3a977af4ac05ad2b8b6a7764b61e7dba0e2ea62f3529b705b85540
+
+networks:
+  nginx-proxy:
+    external:
+      name: nginx-proxy

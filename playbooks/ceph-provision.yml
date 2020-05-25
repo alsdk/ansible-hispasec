@@ -1,0 +1,37 @@
+# 1- añadir la nueva maquina al switch virtual de Hetzner
+# 2- añadir el nuevo nodo en el fichero ceph-add-hosts.yml (actualiza fichero hosts)
+# 3- editar ip_address y hostname en este fichero con el nuevo nodo
+---
+- hosts: aceph-node-11
+  tasks:
+    - include_tasks: ceph-add-hosts.yml     # añadir nodo a /etc/hosts
+
+- hosts: aceph-monitor-1
+  vars:
+    ip_address: 192.168.10.73
+    hostname: ceph-node-11
+  tasks:
+    - include_tasks: ceph-cephuser-sshconfig.yml        # añadir nodo a config ssh al monitor-1
+
+# TODO: en debian 10 no funciona bien el añadir el repo; no añadirlo e instalar el meta 'ceph' para solucionar
+- hosts: aceph-node-11
+  vars:
+    ip_address: 192.168.10.73
+    hostname: ceph-node-11
+  tasks:
+    - include_tasks: ceph-deploy-osd.yml        # crear usuario, debian repo, etc de ceph
+
+- hosts: aceph-monitor-1
+  vars:
+    hostname: ceph-node-11
+  become: yes
+  become_user: ceph-user
+  tasks:
+    - include_tasks: ceph-deploy-osd2.yml       # instalar paquetes de ceph desde monitor-1 (ceph-deploy)
+
+- hosts: aceph-node-11
+  vars: 
+   hostname: ceph-node-11
+  tasks:
+    - include_tasks: ceph-deploy-osd3.yml       # ceph keys, config y format OSDs
+

@@ -1,0 +1,20 @@
+---
+  - name: Check if /root/.ssh dir exists
+    file:
+      path: "/root/.ssh"
+      state: directory
+
+  - name: Check if /root/.ssh/authorized_keys exists
+    file:
+      path: "/root/.ssh/authorized_keys"
+      state: touch
+
+  - name: Add Msalinas Ansible user public key to server
+    lineinfile: 
+      path: "/root/.ssh/authorized_keys"
+      line: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5B78czwKIRYkCfmla4wDZYQrFYyLfFzqmVoVuTT1keWuMtDcOgS152UKxTaLIE+MzdproWSygxIpORiHKDIOMUWOa94Gom0wEonPprxheNURGNtrpyuRrUVbHp24yuXy7Ch8Pi0ltfWuhxHB7M9ihqbeXLaIHTvMvyaAkvBmhb7gXNX6aJUp2zTTFvNqqGq2Ro2cGRvHDSiO2tJe4r5K5rBsos0tRwkzT6u4ZvsuQBZCP09wKN0tPOrVzFqVkXsHWpZqNTmr2t/JW3n3pSsKCGyqeCTeiofsgA1lWPmY1x/y91CmCvwgx9l+TOWTYSts7Ns0VKqHpWTmFlkhk36zJ msalinas@hispansible"
+
+  - name: Add Joyague Ansible user public key to server
+    lineinfile:
+      path: "/root/.ssh/authorized_keys"
+      line: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCym0sGALDSuz24OP6ETxih/homMGiVNowv1sqRj5glNrBlc/he9M2sn5O0PDvS1odPCEclKqPS1aWmYj5G3ToE87IWRYHUsx84LRlznEyVLalvgeRjf2HjAUn06oMLZ8aZsfGlbDnubnHQmV7Q9PTPPjGmZw+aeajB2bz/XR4yYq8hcpT4EGtkbspLxQiZxdTwuEEnXFxZ1KXsO55XrM/+NCq+qQpwQOY6qZAyui7V+DgV0ty+3tHNjbl2qYla5PYyr9OnB5/PDS+Tde+0f/Nx1jIpewQb2Q9Rt4Kt5HsdQZp9rQoN9SEwpiOuZTRclSgJlYADDtaKdyNZaqyZJhBP nekmo@nekmo-hispasec"

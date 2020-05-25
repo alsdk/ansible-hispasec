@@ -1,0 +1,27 @@
+---
+- hosts: uad360
+  vars:
+    user: docker
+    docker_home: /home/docker/pretix
+  become: true
+#  become_user: docker
+  tasks:
+  - copy:
+      src: '.'
+      dest: '{{ docker_home }}'
+#  - name: Copiar
+#    copy:
+#      src: '*'
+#      dest: '{{ docker_home }}'
+#    become: true
+#    become_user: root
+#  - name: Copiar
+#    copy:
+#      src: 'conf/nginx/conf.d/'
+#      dest: '{{ docker_home }}'
+#    become: true
+#    become_user: root
+#  - name: compilar Docker compose
+#    shell: docker-compose build
+#    args:
+#      chdir: '{{ docker_home }}'

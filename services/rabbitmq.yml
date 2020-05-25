@@ -1,0 +1,60 @@
+---
+- hosts: all
+  vars:
+    admins:
+    - joyague
+    - msalinas
+    default_password: koodoussteamboat2018micro
+  become: true
+  tasks:
+  - name: ensure setup packages are installed
+    apt:
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - lsb-core
+        - apt-transport-https
+  - name: add trusted key
+    apt_key:
+      url: https://www.rabbitmq.com/rabbitmq-release-signing-key.asc
+      state: present
+  - name: add rabbitmq apt repository
+    apt_repository:
+      repo: '{{ item }}'
+    with_items:
+    - 'deb https://dl.bintray.com/rabbitmq/debian {{ ansible_lsb.codename }} main'
+    - 'deb https://dl.bintray.com/rabbitmq/debian {{ ansible_lsb.codename }} erlang'
+  - name: install package
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+      state: latest
+    with_items:
+      - erlang-nox
+      - rabbitmq-server
+  - name: enable rabbitmq plugins
+    rabbitmq_plugin: names=rabbitmq_management,rabbitmq_tracing,rabbitmq_federation state=enabled
+    notify:
+    - restart rabbitmq
+  - name: add users
+    rabbitmq_user:
+      user: "{{item}}"
+      password: "{{ default_password }}"
+      tags: "administrator,{{item}}"
+      vhost: "/"
+      configure_priv: ".*"
+      write_priv: ".*"
+      read_priv: ".*"
+      state: "present"
+    with_items: "{{ admins }}"
+  - name: remove default guest user
+    rabbitmq_user: user=guest state=absent
+  - debug:
+      msg: "Terminada instalación. Cambia la contraseña por defecto de los administradores.
+            Url: http://{{ ansible_ssh_host }}:15672 . Administradores a cambiar: {{ admins|join(', ') }}.
+            Password por defecto: {{ default_password }}"
+  handlers:
+  - name: restart rabbitmq
+    service:
+      name: rabbitmq-server
+      state: restarted

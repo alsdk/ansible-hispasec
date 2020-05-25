@@ -1,0 +1,114 @@
+---
+  - name: Create syncro user
+    #become: yes
+    user:
+      name: syncro
+      state: present
+      shell: /bin/bash
+      generate_ssh_key: yes
+      ssh_key_file: .ssh/id_rsa_syncro
+      ssh_key_type: rsa
+      ssh_key_passphrase: '/dn)L46m-/*W8g_Y'
+      #password: '$6$rounds=100000$PwTh0oxgk9qYd3Y0$78QW7MryNkVGAvPU6K.IC1ru1boPZFAC2bF6rSn9qQ7D4Mm4GQoBH1oKCuSSmUaYcdTXWANNmg/OatyWTR8n0/'
+    tags:
+      - almacen-backup
+
+  - name: Get id_rsa_syncro.pub
+    become: yes
+    shell: cat /home/syncro/.ssh/id_rsa_syncro.pub
+    register: id_rsa_pub_slave
+    tags:
+      - almacen-backup
+
+        #- name: DEBUG Check Keys
+        #debug:
+        #msg: "{{ ansible_hostname | regex_replace('-2$', '-1') }}"
+        #tags:
+        #- almacen-backup
+
+  - name: Add authorized key to master host
+    #become: yes
+    authorized_key: 
+      user: syncro
+      key: "{{ id_rsa_pub_slave.stdout }}"
+    delegate_to: "{{ ansible_hostname | regex_replace('-2$', '-1') }}"
+    when: id_rsa_pub_slave.stdout is defined
+    tags:
+      - almacen-backup
+
+  - name: get master host key
+    shell: ssh-keyscan {{ ansible_hostname | regex_replace('-2$', '') }}.koodous.com
+    register: master_host_key
+    tags:
+      - almacen-backup
+
+  - name: add master to known hosts
+    become: yes
+    known_hosts:
+      path: /home/syncro/.ssh/known_hosts
+      name: "{{ ansible_hostname | regex_replace('-2$', '') }}.koodous.com"
+      key: "{{ master_host_key.stdout }}"
+    when: master_host_key.stdout is defined
+    tags:
+      - almacen-backup
+
+  - name: install keychain
+    become: yes
+    apt: 
+      name: keychain
+      state: present
+    tags:
+      - almacen-backup
+
+  - name: add keychain lines to .bashrc
+    become: yes
+    lineinfile:
+      name: /home/syncro/.bashrc
+      state: present
+      insertafter: EOF
+      line: '{{ item.line }}'
+      regexp: '{{ item.regexp }}'
+    with_items: 
+      - { regexp: '^keychain', line: 'keychain --quiet ~/.ssh/id_rsa' }
+      - { regexp: 'HOSTNAME-sh$', line: '. ~/.keychain/$HOSTNAME-sh' }
+    tags:
+      - almacen-backup
+
+
+  - name: create syncro.sh
+    become: yes
+    template: 
+      src: backup/syncro.sh
+      dest: /home/syncro/syncro.sh 
+      group: syncro
+      mode: 0744
+      owner: syncro
+      backup: yes
+    tags:
+      - almacen-backup
+
+  - name: create almacen dir
+    become: yes
+    file:
+      path: /home/develop/almacen
+      state: directory
+      group: syncro
+      owner: syncro
+      mode: 0754
+    tags:
+      - almacen-backup
+
+  - name: add cron line
+    become: yes
+    cron: 
+      state: present   
+      job: '/bin/bash /home/syncro/syncro.sh'
+      minute: '0' 
+      hour: '*/1'
+      day: '*'
+      weekday: '*' 
+      month: '*'
+      name: 'syncro with master'
+      user: 'syncro'
+    tags:
+      - almacen-backup

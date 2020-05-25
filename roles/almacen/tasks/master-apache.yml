@@ -1,0 +1,32 @@
+---
+  - name: Installing apache2 & mod_wsgi if needed on {{ inventory_hostname }}
+    apt: state=present pkg={{ item }} update_cache=yes
+    with_items:
+      - apache2
+      - libapache2-mod-wsgi
+
+  - name: Uploading apache2 site virtualhost
+    template: src=00-birdmagaja.j2 dest=/etc/apache2/sites-available/00-birdmagaja.conf
+
+  - name: Uploading SSL certificates directory on {{ inventory_hostname }}
+    copy: 
+      src: envs/koodous/files/ssl
+      dest: /etc/apache2/
+      owner: root
+      group: root
+
+  - name: Activating apache modules on {{ inventory_hostname }}
+    apache2_module: name={{ item }} state=present
+    with_items:
+      - wsgi
+      - ssl
+      - headers
+
+  - name: a2ensite 00-birdmagaja.conf on {{ inventory_hostname }}
+    command: chdir=/etc/apache2/sites-available a2ensite 00-birdmagaja.conf creates=/etc/apache2/sites-enabled/00-birdmagaja.conf
+
+  - name: Restarting apache2 service
+    service:
+      name: "apache2"
+      state: restarted
+

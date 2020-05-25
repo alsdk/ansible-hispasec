@@ -1,0 +1,10 @@
+---
+  - name: add {{ username }} to sudo group, if needed
+    become: yes
+    user:
+        name: "{{ username }}"
+        groups: sudo
+        state: present
+    when: adduser_system_is_sudo
+    tags:
+      - add_to_sudo_group

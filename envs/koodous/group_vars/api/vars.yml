@@ -1,0 +1,9 @@
+---
+
+application:
+  name: "koodous"
+  repo_url: "git@bitbucket.org:operacioncoconut/whitemirlo.git"
+  branch: "master"
+  path: "/home/develop/koodous/"
+
+is_vm: 'False'

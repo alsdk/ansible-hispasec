@@ -1,0 +1,37 @@
+---
+  - name: install gunicorn package
+    package:
+      name: 'gunicorn'
+      state: 'present'
+
+  - name: create gunicorn user
+    user: 
+      name: {{ gunicorn_user }}
+      system: true
+      home: "/var/lib/{{ gunicorn_user }}"
+      shell: /bin/false
+      state: present
+
+  - name: make sure /etc/gunicorn/ directory exists
+    file:
+      path: '/etc/gunicorn'
+      state: 'directory'
+      owner: '{{ gunicorn_user }}'
+      group: '{{ gunicorn_user }}'
+      mode: '0755'
+
+  - name: install gunicorn config
+    template: 
+      src: gunicorn.py.j2 
+      dest: /etc/gunicorn/{{ gunicorn_app_name }}.py
+      owner: '{{ gunicorn_user }}'
+      group: '{{ gunicorn_user }}'
+      mode: '0644'
+    notify: Restart gunicorn
+  
+  - name: install systemd service configuration 
+    template: 
+      src: gunicorn.service.j2
+      dest: /etc/systemd/system/{{ gunicorn_app_name }}.service
+      mode: "0755"
+    notify: Restart gunicorn

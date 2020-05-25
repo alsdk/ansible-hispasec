@@ -1,0 +1,27 @@
+---
+  # - name: create develop group
+  #   become: yes
+  #   group: 
+
+  # - name: create jenkins user
+  #   become: yes
+  #   user: 
+  #     createhome: yes 
+  #     groups: develop 
+  #     password:  
+  #     http:
+  #     remove:  
+  #     shell: /bin/bash 
+  #     ssh_key_comment:  
+  #     ssh_key_file:  
+  #     ssh_key_passphrase:
+
+  # - name: upload jenkins keys
+  #   become:yes
+
+  # - name: modify .ssh/config
+  #   become: yes
+  #   lineinfile: backrefs=  create=yes  dest=/home/jenkins/.ssh/config insertafter=  insertbefore=  line= state=present validate=  
+  #   with_items:
+  #     - ""
+  #     - ""

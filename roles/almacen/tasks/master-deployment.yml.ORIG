@@ -1,0 +1,66 @@
+---
+  - name: upload ssh keys
+    copy: src=~/.ssh/{{ item }} dest=~/.ssh/ owner=root group=root mode=0600
+    become: yes
+    with_items:
+      - ansible_deploy
+      - ansible_deploy.pub
+    tags:
+      - git_clone_repo
+
+  # - name: clone birdmagaja repository
+  #   become: yes
+  #   git: repo="git@bitbucket.org:operacioncoconut/warehouse-whitemirlo.git"
+  #        version="master"
+  #        clone=yes
+  #        update=yes
+  #        dest="/home/develop/warehouse-whitemirlo"
+  #        accept_hostkey=yes
+  #        key_file="~/.ssh/ansible_deploy"
+  #        force=yes
+  #   notify:
+  #     - restart apache2
+  #   tags:
+  #     - git-clone-repo
+  #     - clone
+
+  - name: install requirements
+    pip: chdir=/home/develop/warehouse-whitemirlo/birdmagaja requirements=requirements.txt state=present virtualenv=/home/develop/.virtualenvs/birdmagaja
+    become: yes
+    tags:
+      - install-requirements
+      - git-clone-repo
+
+
+  - name: upload local_settings.py
+    template: src=master_local_settings.j2 dest=/home/develop/warehouse-whitemirlo/birdmagaja/birdmagaja/local_settings.py owner=root group=root mode=0644
+    become: yes
+    notify: restart apache2
+    tags:
+      - upload-local-settings
+      - git-clone-repo
+
+  - name: execute genalmacen.sh
+    command: chdir=/home/develop/ creates=almacen /bin/bash /home/develop/warehouse-whitemirlo/genalmacen.sh
+    become: yes
+    tags:
+      - git-clone-repo
+
+  - name: ensure almacen folder is owned by www-data
+    file: path=/home/develop/almacen owner=www-data group=www-data mode=0774 state=directory recurse=yes
+    become: yes
+    tags:
+      - git-clone-repo
+
+  - name: create encryption file
+    lineinfile: create=yes dest=/home/develop/secret/iv insertbefore=BOF line="sdsddasdsa" owner=root group=root mode=0644
+    become: yes
+    tags:
+      - git-clone-repo
+
+  - name: add lines to /etc/hosts
+    lineinfile: dest=/etc/hosts insertbefore=BOF line="176.9.22.99 googleplay.koodous" owner=root group=root mode=0644
+    become: yes
+    tags:
+      - hosts-file 
+      - git-clone-repo

@@ -1,0 +1,67 @@
+---
+  - name: Extract OpenVPN configuration and keys
+    unarchive:
+      remote_src: no
+      src: "templates/openvpn/servers/analyzer-vpn-server.tar.gz"
+      dest: /etc/openvpn
+      owner: root
+      group: root
+      mode: 0600
+    tags: vpn_server
+
+  - name: Create /etc/openvpn/ccd directory
+    file: 
+      path: /etc/openvpn/ccd
+      state: directory
+      mode: 0755
+
+  - name: Enable OpenVPN server service on boot
+    service:
+      name: "openvpn@analyzer-vpn-server"
+      state: restarted
+      enabled: yes
+    tags: vpn_server
+
+  - name: Install iptables-persistent if needed on {{ inventory_hostname }}
+    apt:
+      name: iptables-persistent
+      state: present
+    tags: vpn_server
+
+  - name: Uploading iptables rules for {{ inventory_hostname }}
+    template:
+      src: "files/templates/iptables/rules.v4"
+      dest: /etc/iptables/rules.v4
+    tags: vpn_server
+
+  - name: Loading iptables rules for {{ inventory_hostname }}
+    shell: "iptables-restore /etc/iptables/rules.v4"
+    tags: vpn_server
+
+  - name: Enable IP forwarding
+    sysctl:
+      name: net.ipv4.ip_forward
+      value: 1
+      sysctl_set: yes
+      reload: yes
+      state: present
+    tags: vpn_server
+
+  - name: Upload iproute commands (do not route packets over VPN when connecting via public ip)
+    template:
+      src: "files/templates/iptables/openvpn-iproute.sh"
+      dest: /etc/openvpn/openvpn-iproute.sh
+      mode: 0755
+    tags: vpn_server
+
+  - name: Load iproute commands
+    shell: "sh /etc/openvpn/openvpn-iproute.sh"
+    tags: vpn_server
+
+  - name: Restart OpenVPN server in {{ inventory_hostname }}
+    service:
+      name: "openvpn@analyzer-vpn-server"
+      state: restarted
+      enabled: yes
+    tags: vpn_server
+

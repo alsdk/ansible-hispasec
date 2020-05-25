@@ -1,0 +1,39 @@
+---
+  - name: create backuo user
+    user: name=backuo state=present password=$1$SomeSalt$wJ2rGJa9Tl12AVN0vvemm0
+    become: yes
+    tags:
+      - backup
+
+  - name: Set up authorized_keys for the backuo user
+    authorized_key: "user=backuo key={{ lookup('file', 'files/ssh-keys/backuo.pub') }}"
+    become: yes
+    tags:
+      - backup
+
+  - name: get file stat to be able to perform a check in the following task
+    local_action: "stat path=roles/27001/files/backup/{{ inventory_hostname }}_backup.sh"
+    register: file
+    ignore_errors: True
+    tags:
+      - backup
+
+  - name: upload backup script
+    copy: "src=files/backup/{{ inventory_hostname }}_backup.sh dest=/home/backuo/backup.sh owner=backuo mode=u+rwx,g+r,a+r"
+    when: file.stat.exists
+    become: yes
+    tags:
+      - backup
+
+  - name: upload default backup script
+    template: "src=templates/backup/default_backup.sh.j2 dest=/home/backuo/backup.sh owner=backuo mode=u+rwx,g+r,a+r"
+    become: yes
+    when: not file.stat.exists
+    tags:
+      - backup
+
+  - name: configure crontab
+    cron: name="Backup" hour=2 minute=0 state=present job="/bin/bash /home/backuo/backup.sh"
+    become: yes
+    tags:
+      - backup

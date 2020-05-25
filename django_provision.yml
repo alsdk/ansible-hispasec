@@ -1,0 +1,9 @@
+---
+  - name: first time provision for a Django application 
+    hosts: {{ app }}
+    roles:
+      - debian-base
+      - django
+      - deployment
+      - gunicorn
+      - nginx

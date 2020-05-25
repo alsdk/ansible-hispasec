@@ -1,0 +1,6 @@
+---
+- hosts: koodous-all
+  tasks: 
+  - name: Disable password expiration for {{ username }}
+    shell: "sed -i.bak -e 's/^\\({{ username }}.*\\)\\(:0:\\)/\\1::/' /etc/shadow"
+

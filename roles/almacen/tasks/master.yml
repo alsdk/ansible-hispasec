@@ -1,0 +1,6 @@
+---
+    - include: master-deployment.yml 
+    - include: master-androguard.yml
+    - include: master-apache.yml
+    - include: master-celery.yml
+

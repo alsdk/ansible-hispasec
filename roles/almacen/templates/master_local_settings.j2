@@ -1,0 +1,201 @@
+from django.http import UnreadablePostError
+from kombu import Exchange, Queue
+import logging
+import os
+
+print "LO IMPORTA"
+def skip_unreadable_post(record):
+    if record.exc_info:
+        exc_type, exc_value = record.exc_info[:2]
+        if isinstance(exc_value, UnreadablePostError):
+            return False
+    return True
+
+
+SECRET = 'miraalcielopunkymiraalcielopunky'     # Clave de cifrado
+PATH_TEMP = '/tmp'
+PATH_ALMACEN = '/home/develop/almacen'
+PATH_IV = "/home/develop/secret"
+
+BLOCKSIZE = 65536
+APK_MAX_SIZE = 256000000 #256MB
+
+WM_URL = "https://koodous.com/"
+WM_USER = "dispatcher"
+WM_PASS = "dispatcher"
+ADMINS = (
+    ('Fernando', 'framirez@hispasec.com'),
+    ('Daniee', 'dvaca@hispasec.com'),
+    ('Pako', 'flopez@hispasec.com'),
+    ('Antonio', 'asanchez@koodous.com')
+)
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+SERVER_EMAIL = "info@koodous.com"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "info@koodous.com"
+EMAIL_HOST_PASSWORD = "ohG4iBSd\'m-Um\'9\\"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_FROM = "Koodous.com <no-reply@koodous.com>"
+DEFAULT_FROM_EMAIL = "Koodous.com <no-reply@koodous.com>"
+
+
+HOSTNAME = "lmcn7.koodous.com"
+TOKEN = "37d4950478c6861611a0459db50d09521253bda8"
+HEADERS = {
+        "Authorization": "Token %s" % TOKEN
+    }
+API_VT = "907143dc6cad04b946ed392fdc69bc824bb2cd04033446a8cddddb6e01349cec"
+PROCESS_APKS = True
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+#BROKER_BACKEND = 'memory'
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+
+#CELERY_SEND_TASK_ERROR_EMAILS = False
+CELERY_HIJACK_ROOT_LOGGER = True
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+
+CELERY_ALWAYS_EAGER = False
+
+
+CELERY_QUEUES = (
+    Queue('celery', Exchange('celery', type='direct'), routing_key='celery', priority=10,
+          consumer_arguments={'x-priority': 10}),
+    #Queue('high', Exchange('celery', type='direct'), routing_key='high', priority=1,
+    #      consumer_arguments={'x-priority': 1}),
+)
+
+
+
+PATH_MODULES = os.path.dirname(os.path.dirname(__file__)) + "/modules/"
+PATH_LOG = "/var/log/birdmagaja/"
+
+if not os.path.exists(PATH_LOG):
+    os.makedirs(PATH_LOG)
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'skip_unreadable_posts': {
+            '()': 'django.utils.log.CallbackFilter',
+            'callback': skip_unreadable_post,
+        }
+    },
+'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+       },
+        'file_tasks': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '{}tasks.log'.format(PATH_LOG),
+            'formatter': 'simple'
+        }
+    },'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propagate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'filters': ['skip_unreadable_posts'],
+            'propagate': False,
+        },
+        'koodous': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+        },
+ 'tasks': {
+            'handlers': ['file_tasks'],
+            'propagate': True,
+            'level': 'DEBUG'
+        }
+    }
+}
+
+DEBUG_LOGGER = True
+ASYNC = False
+MODULES = []
+
+for filename in os.listdir(PATH_MODULES): # "." means current directory
+    if "mod_" == filename[0:4]:
+        mod = filename.replace("mod_", "").replace(".py","")
+        file_log = '{}{}.log'.format(PATH_LOG, mod)
+        if not os.path.exists(file_log):
+            open(file_log, 'w+')
+            os.chmod(file_log, 0777)
+
+        MODULES.append(mod)
+        aux_loggers = {mod: {
+            'handlers': ['file_{}'.format(mod)],
+            'propagate': True,
+            'level': 'DEBUG'
+        }}
+        aux_handler = {'file_{}'.format(mod): {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': file_log,
+            'formatter': 'simple'
+        }}
+        LOGGING['loggers'].update(aux_loggers)
+        LOGGING['handlers'].update(aux_handler)
+
+
+LOGGER_TASKS = logging.getLogger("tasks")
+
+# Configuration vars for MODULES
+PARAM_OVH = {
+    "OVH_OPS_VERSION" : "1",
+    "OVH_OPS_ZONE" : "gra1",
+    "OVH_OPS_TENANT_ID" : "38d9c6ec3886404a9d0e56c765f3d18b",
+    "OVH_OPS_USER" : "2M4EAH6tcgVD",
+    "OVH_OPS_PASSWORD" : "hKmD4MrgkZsQktAm39bjTfwXbDGcfG7b",
+    "OVH_OPS_TOKEN_OPS" : "5050a65c654242689eab86981aee7ab2",
+    "OVH_OPS_TENANT_NAME" : "3745349725041522",
+    "OVH_OPS_CONTAINER_NAME" : "apk",
+    "OVH_OPS_LIFETIME_FILE" : (3600 * 24) * 7,
+    "OVH_OPS_LIFETIME_URL" : 3600 * 2,
+    "FEEDER_URL": "https://feeder.koodous.com/apk/"}
+
+
+PARAM_GOOGLEPLAY = {}
+PARAM_VIRUSTOTAL = {"API_VT":API_VT}
+PARAM_CACHEWAREHOUSE = {}
+PARAM_ANDROGUARD = {'KOODOUS_URL': 'https://api.koodous.com/',
+                    'KOODOUS_TOKEN': '06815938cd208fb2483ac718e123d76cf87f8661',
+                    'HOST_GOOGLEPLAY': '176.9.22.99'}
+
+LOGGER_OVH          = logging.getLogger("ovh")
+LOGGER_GOOGLEPLAY   = logging.getLogger("googleplay")
+LOGGER_ANDROGUARD   = logging.getLogger("androguard")
+LOGGER_VIRUSTOTAL   = logging.getLogger("virustotal")
+LOGGER_CACHEWAREHOUSE   = logging.getLogger("cachewarehouse")

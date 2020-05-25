@@ -1,0 +1,10 @@
+---
+# tasks file for nginx
+
+- name: "install nginx"
+  package:
+    name: nginx
+    state: present
+  tags:
+    - install
+  notify: "start nginx"
